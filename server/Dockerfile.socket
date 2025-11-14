@@ -1,0 +1,13 @@
+FROM python:3.10-slim
+
+WORKDIR /app
+
+COPY requirements_socket.txt /app/requirements_socket.txt
+
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir -r requirements_socket.txt && \
+    pip install python-dotenv
+
+COPY socket_server.py /app/
+
+CMD ["python", "socket_server.py"]

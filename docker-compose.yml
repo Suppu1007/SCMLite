@@ -1,0 +1,156 @@
+services:
+
+  # ZOOKEEPER
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.6.1
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    networks:
+      - fullstack_net
+    restart: unless-stopped
+
+  # KAFKA BROKER
+  kafka:
+    image: confluentinc/cp-kafka:7.6.1
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    ports:
+      - "9092:9092"
+    networks:
+      - fullstack_net
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-topics --bootstrap-server kafka:9092 --list"]
+      interval: 8s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  # MONGO (local dev)
+  mongo:
+    image: mongo:6.0
+    container_name: mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - fullstack_net
+
+  # FASTAPI SERVER
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: server
+    depends_on:
+      kafka:
+        condition: service_healthy
+      mongo:
+        condition: service_started
+    environment:
+      - MONGO_URL=${MONGO_URL}
+      - DB_NAME=${DB_NAME}
+      - SECRET_KEY=${SECRET_KEY}
+      - KAFKA_BROKER=${KAFKA_BROKER}
+      - SOCKET_HOST=${SOCKET_HOST}
+      - SOCKET_PORT=${SOCKET_PORT}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./server/templates:/app/templates:ro
+      - ./server/static:/app/static:ro
+    networks:
+      - fullstack_net
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+    restart: on-failure
+
+  # SOCKET SERVER (streams fake device data)
+  socket-server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.socket
+    container_name: socket_server
+    environment:
+      - SOCKET_PORT=${SOCKET_PORT}
+    ports:
+      - "9999:9999"
+    depends_on:
+      - server
+    networks:
+      - fullstack_net
+    restart: on-failure
+
+  # KAFKA PRODUCER (reads socket-server, writes to kafka)
+  kafka_producer:
+    build:
+      context: ./producer
+      dockerfile: Dockerfile
+    container_name: kafka_producer
+    depends_on:
+      kafka:
+        condition: service_healthy
+      socket-server:
+        condition: service_started
+    environment:
+      - KAFKA_BROKER=${KAFKA_BROKER}
+      - SOCKET_HOST=${SOCKET_HOST}
+      - SOCKET_PORT=${SOCKET_PORT}
+    restart: on-failure
+    networks:
+      - fullstack_net
+
+  # KAFKA CONSUMER (reads kafka, writes to mongo)
+  kafka_consumer:
+    build:
+      context: ./consumer
+      dockerfile: Dockerfile
+    container_name: kafka_consumer
+    depends_on:
+      kafka:
+        condition: service_healthy
+      mongo:
+        condition: service_started
+    environment:
+      - KAFKA_BROKER=${KAFKA_BROKER}
+      - MONGO_URL=${MONGO_URL}
+    restart: always
+    networks:
+      - fullstack_net
+
+  # KAFKA INIT (create topic)
+  kafka-init:
+    image: confluentinc/cp-kafka:7.6.1
+    container_name: kafka_init
+    depends_on:
+      kafka:
+        condition: service_healthy
+    entrypoint: ["/bin/bash", "/kafka-init.sh"]
+    volumes:
+      - ./kafka-init.sh:/kafka-init.sh
+    networks:
+      - fullstack_net
+    restart: "no"
+
+volumes:
+  mongo-data:
+
+networks:
+  fullstack_net:
+    driver: bridge

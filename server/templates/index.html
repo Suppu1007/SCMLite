@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- SIMPLE HOME HEADER -->
+<div class="card-custom mb-4">
+  <h2 class="fw-bold mb-1" style="color:#2c3e50;">Welcome back, {{ user }}</h2>
+  <p class="text-muted mb-0">Your quick logistics overview</p>
+</div>
+
+<!-- SIMPLE KPI ROW -->
+<div class="row g-4">
+
+  <!-- Total Shipments -->
+  <div class="col-md-4">
+    <div class="card-custom text-center py-4">
+      <span class="material-icons fs-1 text-primary mb-2">inventory_2</span>
+      <h6 class="text-muted">Total Shipments</h6>
+      <h2 class="fw-bold">{{ shipment_count|default(0) }}</h2>
+    </div>
+  </div>
+
+  <!-- Active Devices -->
+  <div class="col-md-4">
+    <div class="card-custom text-center py-4">
+      <span class="material-icons fs-1 text-success mb-2">sensors</span>
+      <h6 class="text-muted">Active Devices</h6>
+      <h2 class="fw-bold">{{ active_devices|default(0) }}</h2>
+    </div>
+  </div>
+
+  <!-- In Transit -->
+  <div class="col-md-4">
+    <div class="card-custom text-center py-4">
+      <span class="material-icons fs-1 text-warning mb-2">local_shipping</span>
+      <h6 class="text-muted">Shipments In Transit</h6>
+      <h2 class="fw-bold">{{ in_transit|default(0) }}</h2>
+    </div>
+  </div>
+
+</div>
+
+<br><br><br>
+
+{% endblock %}
+
+{% block fab %}
+<!-- FAB visible ONLY on THIS page -->
+<a href="/create-shipment" class="fab">
+  <span class="material-icons">add</span>
+</a>
+{% endblock %}

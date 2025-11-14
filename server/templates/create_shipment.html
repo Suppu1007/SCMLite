@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="mx-auto" style="max-width:900px;">
+  <div class="card-custom">
+    <h3 class="fw-bold mb-3">Create Shipment</h3>
+
+    {% if flash %}
+    <div class="alert alert-danger">{{ flash }}</div>
+    <script>window.addEventListener('load',()=>showToast("{{ flash }}","error"))</script>
+    {% endif %}
+
+    <form method="POST" class="row g-3">
+      <div class="col-md-6"><label class="form-label">Shipment ID</label><input name="shipment_id" class="form-control p-3 rounded-3" required></div>
+      <div class="col-md-6"><label class="form-label">Weight (kg)</label><input name="weight" type="number" step="0.01" class="form-control p-3 rounded-3" required></div>
+
+      <div class="col-md-6"><label class="form-label">Sender Name</label><input name="sender_name" class="form-control p-3 rounded-3" required></div>
+      <div class="col-md-6"><label class="form-label">Receiver Name</label><input name="receiver_name" class="form-control p-3 rounded-3" required></div>
+
+      <div class="col-12"><label class="form-label">Destination</label><input name="destination" class="form-control p-3 rounded-3" required></div>
+
+      <div class="col-12">
+        <label class="form-label">Status</label>
+        <select name="status" class="form-select p-3 rounded-3">
+          <option>Pending</option>
+          <option>In Transit</option>
+          <option>Delivered</option>
+        </select>
+      </div>
+
+      <div class="col-12">
+        <button class="btn btn-primary w-100 py-2 fw-semibold">Create Shipment</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

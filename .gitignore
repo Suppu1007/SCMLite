@@ -1,0 +1,21 @@
+# Python Virtual Environment
+bin/
+lib/
+lib64/
+include/
+pyvenv.cfg
+__pycache__/
+
+# Kafka binaries
+kafka/
+kafka_2.13-3.4.0/
+
+# Database / Large files
+db/
+
+# Environment files
+.env
+
+# IDE folders
+.vscode/
+kafka-init.sh
