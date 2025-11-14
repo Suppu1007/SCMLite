@@ -192,6 +192,34 @@ async def update_profile(
     users_collection.update_one({"email": user_email}, {"$set": update_data})
 
     return RedirectResponse("/profile", status_code=303)
+# =========================================
+# --- DASHBOARD---
+# =========================================
+
+
+@app.get("/dashboard", response_class=HTMLResponse)
+async def dashboard_page(request: Request, user_email: str = Depends(get_current_user)):
+
+    shipment_count = shipments_collection.count_documents({})
+
+    active_devices = streams_collection.count_documents({})
+
+    today = datetime.utcnow().strftime("%Y-%m-%d")
+    deliveries_today = shipments_collection.count_documents({"status": "Delivered"})
+
+    recent_shipments = list(
+        shipments_collection.find({}, {"_id": 0}).sort("created_at", -1).limit(5)
+    )
+
+    return templates.TemplateResponse("dashboard.html", {
+        "request": request,
+        "active_page": "dashboard",
+        "is_admin": is_admin(user_email),
+        "shipment_count": shipment_count,
+        "active_devices": active_devices,
+        "deliveries_today": deliveries_today,
+        "recent_shipments": recent_shipments
+    })
 
 
 # =========================================

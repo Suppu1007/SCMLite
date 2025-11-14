@@ -1,45 +1,51 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="card-custom">
-  <div class="d-flex justify-content-between align-items-center">
-    <div>
-      <h1 class="fw-bold mb-1">Welcome , {{ user }}</h1>
-      <p class="text-muted mb-0">Here's the snapshot of current activity.</p>
-    </div>
-    <div class="text-end">
-      <span class="badge bg-primary py-2 px-3">Shipments: <span id="counter" data-target="{{ shipment_count }}">0</span></span>
-    </div>
-  </div>
 
-  <hr class="my-4"/>
-
-  <div class="row g-4">
-    <div class="col-md-4">
-      <div class="p-4 rounded-4 bg-white shadow-sm">
-        <h6 class="text-muted">Total Shipments</h6>
-        <h3 class="fw-bold" id="counterBox">{{ shipment_count }}</h3>
-      </div>
-    </div>
-
-    <div class="col-md-8">
-      <div class="p-4 rounded-4 bg-white shadow-sm">
-        <h6 class="text-muted">Activity (Live Stream)</h6>
-        <p class="text-muted mb-0">Latest device events and statuses shown in Data Stream page.</p>
-      </div>
-    </div>
-  </div>
+<!-- SIMPLE HOME HEADER -->
+<div class="card-custom mb-4">
+  <h2 class="fw-bold mb-1" style="color:#2c3e50;">Welcome back, {{ user }}</h2>
+  <p class="text-muted mb-0">Your quick logistics overview</p>
 </div>
 
-<script>
-const c = document.getElementById('counter');
-if(c){
-  const target = parseInt(c.dataset.target) || 0;
-  let n=0, step = Math.max(1, Math.floor(target/60));
-  const iv = setInterval(()=> {
-    n+=step;
-    if(n>=target){ n=target; clearInterval(iv); }
-    c.innerText = n;
-  }, 20);
-}
-</script>
+<!-- SIMPLE KPI ROW -->
+<div class="row g-4">
+
+  <!-- Total Shipments -->
+  <div class="col-md-4">
+    <div class="card-custom text-center py-4">
+      <span class="material-icons fs-1 text-primary mb-2">inventory_2</span>
+      <h6 class="text-muted">Total Shipments</h6>
+      <h2 class="fw-bold">{{ shipment_count|default(0) }}</h2>
+    </div>
+  </div>
+
+  <!-- Active Devices -->
+  <div class="col-md-4">
+    <div class="card-custom text-center py-4">
+      <span class="material-icons fs-1 text-success mb-2">sensors</span>
+      <h6 class="text-muted">Active Devices</h6>
+      <h2 class="fw-bold">{{ active_devices|default(0) }}</h2>
+    </div>
+  </div>
+
+  <!-- In Transit -->
+  <div class="col-md-4">
+    <div class="card-custom text-center py-4">
+      <span class="material-icons fs-1 text-warning mb-2">local_shipping</span>
+      <h6 class="text-muted">Shipments In Transit</h6>
+      <h2 class="fw-bold">{{ in_transit|default(0) }}</h2>
+    </div>
+  </div>
+
+</div>
+
+<br><br><br>
+
+{% endblock %}
+
+{% block fab %}
+<!-- FAB visible ONLY on THIS page -->
+<a href="/create-shipment" class="fab">
+  <span class="material-icons">add</span>
+</a>
 {% endblock %}
