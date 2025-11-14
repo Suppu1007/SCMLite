@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card-custom">
+  <h3 class="fw-bold mb-3">User Management</h3>
+
+  {% if flash %}
+  <div class="alert alert-info">{{ flash }}</div>
+  <script>window.addEventListener('load',()=>showToast("{{ flash }}","success"))</script>
+  {% endif %}
+
+  <div class="table-responsive">
+    <table class="table table-striped align-middle">
+      <thead class="table-light">
+        <tr><th>Name</th><th>Email</th><th>Role</th><th>Change Role</th></tr>
+      </thead>
+      <tbody>
+        {% for u in users %}
+        <tr>
+          <td>{{ u.name }}</td>
+          <td>{{ u.email }}</td>
+          <td><span class="badge bg-primary">{{ u.role }}</span></td>
+          <td>
+            <form method="POST" class="d-flex gap-2 align-items-center">
+              <input type="hidden" name="user_email_target" value="{{ u.email }}">
+              <select name="new_role" class="form-select form-select-sm w-auto">
+                <option value="User" {% if u.role=='User' %}selected{% endif %}>User</option>
+                <option value="Admin" {% if u.role=='Admin' %}selected{% endif %}>Admin</option>
+              </select>
+              <button class="btn btn-primary btn-sm">Update</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

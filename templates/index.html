@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card-custom">
+  <div class="d-flex justify-content-between align-items-center">
+    <div>
+      <h1 class="fw-bold mb-1">Welcome , {{ user }}</h1>
+      <p class="text-muted mb-0">Here's the snapshot of current activity.</p>
+    </div>
+    <div class="text-end">
+      <span class="badge bg-primary py-2 px-3">Shipments: <span id="counter" data-target="{{ shipment_count }}">0</span></span>
+    </div>
+  </div>
+
+  <hr class="my-4"/>
+
+  <div class="row g-4">
+    <div class="col-md-4">
+      <div class="p-4 rounded-4 bg-white shadow-sm">
+        <h6 class="text-muted">Total Shipments</h6>
+        <h3 class="fw-bold" id="counterBox">{{ shipment_count }}</h3>
+      </div>
+    </div>
+
+    <div class="col-md-8">
+      <div class="p-4 rounded-4 bg-white shadow-sm">
+        <h6 class="text-muted">Activity (Live Stream)</h6>
+        <p class="text-muted mb-0">Latest device events and statuses shown in Data Stream page.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const c = document.getElementById('counter');
+if(c){
+  const target = parseInt(c.dataset.target) || 0;
+  let n=0, step = Math.max(1, Math.floor(target/60));
+  const iv = setInterval(()=> {
+    n+=step;
+    if(n>=target){ n=target; clearInterval(iv); }
+    c.innerText = n;
+  }, 20);
+}
+</script>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<h3 class="text-center mb-3">User Management</h3>
+
+<div class="card p-3">
+  <table class="table text-center">
+    <tr><th>Name</th><th>Email</th><th>Role</th><th>Action</th></tr>
+
+    {% for u in users %}
+    <tr>
+      <td>{{ u.name }}</td>
+      <td>{{ u.email }}</td>
+      <td>{{ u.role }}</td>
+      <td>
+        <form method="POST">
+          <input type="hidden" name="user_email" value="{{ u.email }}">
+          <select name="new_role" class="form-select form-select-sm">
+            <option>User</option>
+            <option>Admin</option>
+          </select>
+          <button class="btn btn-primary btn-sm mt-1">Update</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

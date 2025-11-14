@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="mx-auto" style="max-width:680px;">
+  <div class="card-custom">
+    <div class="d-flex align-items-center gap-3 mb-3">
+      <span class="material-icons" style="font-size:42px;color:#163a52">account_circle</span>
+      <div>
+        <h3 class="fw-bold mb-0">{{ user.name }}</h3>
+        <small class="text-muted">{{ user.email }}</small>
+      </div>
+    </div>
+
+    {% if flash %}
+    <div class="alert alert-info">{{ flash }}</div>
+    <script>window.addEventListener('load',()=>showToast("{{ flash }}","success"))</script>
+    {% endif %}
+
+    <form method="POST" class="row g-3 mt-2">
+      <div class="col-12">
+        <label class="form-label fw-semibold">Full Name</label>
+        <input name="fullname" value="{{ user.name }}" class="form-control p-3 rounded-3" required>
+      </div>
+
+      <div class="col-12">
+        <label class="form-label fw-semibold">Email (read-only)</label>
+        <input value="{{ user.email }}" class="form-control p-3 rounded-3" disabled>
+      </div>
+
+      <div class="col-12">
+        <label class="form-label fw-semibold">Role</label>
+        <input value="{{ user.role }}" class="form-control p-3 rounded-3" disabled>
+      </div>
+
+      <div class="col-12">
+        <label class="form-label fw-semibold">New Password (optional)</label>
+        <input name="new_password" type="password" class="form-control p-3 rounded-3" placeholder="Enter to change">
+      </div>
+
+      <div class="col-12">
+        <button class="btn btn-primary w-100 py-2 fw-semibold">Update Profile</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
