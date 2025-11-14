@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2 class="fw-bold mb-4">Analytics Dashboard</h2>
+
+<div class="row g-4">
+
+  <!-- Shipments -->
+  <div class="col-md-4">
+    <div class="card-custom">
+      <h6 class="text-muted">Total Shipments</h6>
+      <h2 class="fw-bold">{{ shipment_count }}</h2>
+    </div>
+  </div>
+
+  <!-- Active Devices -->
+  <div class="col-md-4">
+    <div class="card-custom">
+      <h6 class="text-muted">Active Devices</h6>
+      <h2 class="fw-bold">{{ active_devices }}</h2>
+    </div>
+  </div>
+
+  <!-- Deliveries -->
+  <div class="col-md-4">
+    <div class="card-custom">
+      <h6 class="text-muted">Deliveries Today</h6>
+      <h2 class="fw-bold">{{ deliveries_today }}</h2>
+    </div>
+  </div>
+
+</div>
+
+<hr class="my-4">
+
+<h4 class="fw-bold mb-3">Recent Shipment Activity</h4>
+
+<div class="card-custom">
+  <ul>
+    {% for s in recent_shipments %}
+      <li><strong>{{ s.shipment_id }}</strong> — {{ s.status }} ({{ s.destination }})</li>
+    {% endfor %}
+  </ul>
+</div>
+
+{% endblock %}
