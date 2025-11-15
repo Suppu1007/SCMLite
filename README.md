@@ -95,19 +95,7 @@ Example document stored:
 }
 ```
 
-MongoDB connection example used in consumer:
-
-```python
-from pymongo import MongoClient
-client = MongoClient("mongodb://mongo:27017/")
-db = client["iot_stream"]
-collection = db["device_logs"]
-collection.insert_one(message)
-```
-
----
-
-# 🧪 Running the Pipeline (Effective Instructions)
+# 🧪 Running the Pipeline 
 
 ## **1️⃣ Start MongoDB, Kafka & Zookeeper**
 
