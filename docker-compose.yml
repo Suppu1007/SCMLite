@@ -1,6 +1,16 @@
+<<<<<<< HEAD
 services:
 
   # ZOOKEEPER
+=======
+version: "3.9"
+
+services:
+
+  # ---------------------------------------------------------
+  # ZOOKEEPER
+  # ---------------------------------------------------------
+>>>>>>> dev
   zookeeper:
     image: confluentinc/cp-zookeeper:7.6.1
     container_name: zookeeper
@@ -13,7 +23,13 @@ services:
       - fullstack_net
     restart: unless-stopped
 
+<<<<<<< HEAD
   # KAFKA BROKER
+=======
+  # ---------------------------------------------------------
+  # KAFKA BROKER
+  # ---------------------------------------------------------
+>>>>>>> dev
   kafka:
     image: confluentinc/cp-kafka:7.6.1
     container_name: kafka
@@ -37,19 +53,36 @@ services:
       retries: 10
     restart: unless-stopped
 
+<<<<<<< HEAD
   # MONGO (local dev)
   mongo:
     image: mongo:6.0
     container_name: mongo
     restart: unless-stopped
+=======
+  # ---------------------------------------------------------
+  # MONGO DATABASE
+  # ---------------------------------------------------------
+  mongo:
+    image: mongo:6.0
+    container_name: mongo
+>>>>>>> dev
     ports:
       - "27017:27017"
     volumes:
       - mongo-data:/data/db
     networks:
       - fullstack_net
+<<<<<<< HEAD
 
   # FASTAPI SERVER
+=======
+    restart: unless-stopped
+
+  # ---------------------------------------------------------
+  # FASTAPI SERVER
+  # ---------------------------------------------------------
+>>>>>>> dev
   server:
     build:
       context: ./server
@@ -67,6 +100,13 @@ services:
       - KAFKA_BROKER=${KAFKA_BROKER}
       - SOCKET_HOST=${SOCKET_HOST}
       - SOCKET_PORT=${SOCKET_PORT}
+<<<<<<< HEAD
+=======
+      - EMAIL_SENDER=${EMAIL_SENDER}
+      - EMAIL_PASSWORD=${EMAIL_PASSWORD}
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD} 
+>>>>>>> dev
     ports:
       - "8000:8000"
     volumes:
@@ -81,7 +121,13 @@ services:
       retries: 6
     restart: on-failure
 
+<<<<<<< HEAD
   # SOCKET SERVER (streams fake device data)
+=======
+  # ---------------------------------------------------------
+  # SOCKET SERVER (fake device stream)
+  # ---------------------------------------------------------
+>>>>>>> dev
   socket-server:
     build:
       context: ./server
@@ -97,7 +143,13 @@ services:
       - fullstack_net
     restart: on-failure
 
+<<<<<<< HEAD
   # KAFKA PRODUCER (reads socket-server, writes to kafka)
+=======
+  # ---------------------------------------------------------
+  # KAFKA PRODUCER
+  # ---------------------------------------------------------
+>>>>>>> dev
   kafka_producer:
     build:
       context: ./producer
@@ -112,11 +164,21 @@ services:
       - KAFKA_BROKER=${KAFKA_BROKER}
       - SOCKET_HOST=${SOCKET_HOST}
       - SOCKET_PORT=${SOCKET_PORT}
+<<<<<<< HEAD
     restart: on-failure
     networks:
       - fullstack_net
 
   # KAFKA CONSUMER (reads kafka, writes to mongo)
+=======
+    networks:
+      - fullstack_net
+    restart: on-failure
+
+  # ---------------------------------------------------------
+  # KAFKA CONSUMER
+  # ---------------------------------------------------------
+>>>>>>> dev
   kafka_consumer:
     build:
       context: ./consumer
@@ -130,11 +192,21 @@ services:
     environment:
       - KAFKA_BROKER=${KAFKA_BROKER}
       - MONGO_URL=${MONGO_URL}
+<<<<<<< HEAD
     restart: always
     networks:
       - fullstack_net
 
   # KAFKA INIT (create topic)
+=======
+    networks:
+      - fullstack_net
+    restart: always
+
+  # ---------------------------------------------------------
+  # KAFKA INIT SCRIPT (create topic)
+  # ---------------------------------------------------------
+>>>>>>> dev
   kafka-init:
     image: confluentinc/cp-kafka:7.6.1
     container_name: kafka_init
@@ -148,6 +220,12 @@ services:
       - fullstack_net
     restart: "no"
 
+<<<<<<< HEAD
+=======
+# ---------------------------------------------------------
+# VOLUMES + NETWORK
+# ---------------------------------------------------------
+>>>>>>> dev
 volumes:
   mongo-data:
 

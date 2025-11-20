@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card-custom">
+  <h3 class="fw-bold mb-3">Role Change History</h3>
+
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead class="table-dark">
+        <tr>
+          <th>Target User</th>
+          <th>Changed By</th>
+          <th>Old Role</th>
+          <th>New Role</th>
+          <th>Timestamp</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in history %}
+        <tr>
+          <td>{{ r.target_user }}</td>
+          <td>{{ r.changed_by }}</td>
+          <td>{{ r.old_role }}</td>
+          <td>{{ r.new_role }}</td>
+          <td>{{ r.timestamp }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mt-2">
+    <a class="btn btn-outline-secondary btn-sm" href="/admin/users">Back to Users</a>
+  </div>
+</div>
+{% endblock %}

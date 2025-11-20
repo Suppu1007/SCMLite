@@ -3,8 +3,13 @@ import json
 import random
 import time
 
+<<<<<<< HEAD
 HOST = "0.0.0.0"  # Listen on all interfaces
 PORT = 9999       # Port for Kafka producer to connect
+=======
+HOST = "0.0.0.0"  
+PORT = 9999      
+>>>>>>> dev
 
 def generate_sensor_data():
     """Generate random sensor data."""

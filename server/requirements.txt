@@ -1,5 +1,6 @@
 fastapi
 uvicorn
+<<<<<<< HEAD
 pymongo
 python-multipart
 passlib[bcrypt]
@@ -7,3 +8,12 @@ bcrypt
 kafka-python
 python-jose[cryptography]
 jinja2
+=======
+python-dotenv
+pymongo
+python-jose
+bcrypt
+jinja2
+python-multipart
+kafka-python
+>>>>>>> dev

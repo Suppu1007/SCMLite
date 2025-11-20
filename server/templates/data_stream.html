@@ -26,7 +26,11 @@
     try {
       const res = await fetch("/api/stream");
       const json = await res.json();
+<<<<<<< HEAD
       const data = json.data;
+=======
+      const data = json.data || [];
+>>>>>>> dev
 
       const body = document.getElementById("dataBody");
       body.innerHTML = "";
@@ -34,12 +38,21 @@
       data.forEach(row => {
         body.innerHTML += `
           <tr>
+<<<<<<< HEAD
             <td>${row.Device_ID}</td>
             <td>${row.Battery_Level}</td>
             <td>${row.Temperature}</td>
             <td>${row.Humidity}</td>
             <td>${row.Route_From} → ${row.Route_To}</td>
             <td>${row.Timestamp}</td>
+=======
+            <td>${row.Device_ID ?? ""}</td>
+            <td>${row.Battery_Level ?? ""}</td>
+            <td>${row.Temperature ?? ""}</td>
+            <td>${row.Humidity ?? ""}</td>
+            <td>${row.Route_From ?? ""} → ${row.Route_To ?? ""}</td>
+            <td>${row.Timestamp ?? ""}</td>
+>>>>>>> dev
           </tr>`;
       });
 
@@ -52,4 +65,9 @@
   loadData();
 </script>
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> dev
 {% endblock %}

@@ -20,6 +20,7 @@
   </div>
 
   <!-- Active Devices -->
+<<<<<<< HEAD
   <div class="col-md-4">
     <div class="card-custom text-center py-4">
       <span class="material-icons fs-1 text-success mb-2">sensors</span>
@@ -27,6 +28,16 @@
       <h2 class="fw-bold">{{ active_devices|default(0) }}</h2>
     </div>
   </div>
+=======
+  <div class="col-md-4 col-sm-6 mb-4">
+    <div class="card-custom text-center py-4">
+      <span class="material-icons fs-1 text-success mb-2">sensors</span>
+      <h6 class="text-muted">Active Devices</h6>
+      <h2 class="fw-bold">{{ active_devices | default(0) }}</h2>
+    </div>
+  </div>
+  
+>>>>>>> dev
 
   <!-- In Transit -->
   <div class="col-md-4">
