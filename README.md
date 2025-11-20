@@ -1,174 +1,67 @@
 
+# 📦 **SCMLite – Supply Chain Management System**
 
-SCMLite
+A full-stack SCM platform with FastAPI backend, Kafka streaming, MongoDB storage, role-based access, and responsive UI.
 
-This project implements a **real-time IoT data streaming architecture** using:
+---
 
-* **Socket Server** → generates live telemetry
-* **Kafka Producer** → receives socket data & pushes to Kafka
-* **Kafka Consumer** → reads Kafka topic & stores data in **MongoDB**
-* **MongoDB** → persistent storage for streamed device logs
+## 🚀 **1. Overview**
 
-This README covers ONLY these folders:
+SCMLite provides shipment management, device live-stream data, admin role control, and secure authentication.
+The system includes a FastAPI server, Kafka producer/consumer pipeline, and MongoDB database.
+
+---
+
+## ⭐ **2. Key Features**
+
+* User authentication & JWT-based sessions
+* Admin dashboard with role management
+* Email notifications for role updates
+* Create & track shipments
+* Live device data streaming via Kafka
+* Responsive UI using Bootstrap
+* MongoDB persistence
+* Dockerized microservice architecture
+
+---
+
+## 🏗️ **3. Architecture**
 
 ```
-server/
-producer/
-consumer/
+Socket Server → Kafka Producer → Kafka Broker → Kafka Consumer → MongoDB → FastAPI → UI
 ```
 
 ---
 
-## 📂 Folder Overview
+## 🧰 **4. Tech Stack**
 
-### **server/**
-
-Contains the complete data-generation and optional web layer.
-
-| File/Folder               | Description                                    |
-| ------------------------- | ---------------------------------------------- |
-| `socket_server.py`        | TCP server that generates IoT device JSON data |
-| `app.py`                  | Optional web layer / API / dashboard           |
-| `static/`                 | CSS, JS, images for UI                         |
-| `templates/`              | HTML templates                                 |
-| `Dockerfile.socket`       | Dockerfile for socket server                   |
-| `Dockerfile`              | Dockerfile for server web app                  |
-| `requirements_socket.txt` | Dependencies for socket server                 |
-| `requirements.txt`        | Dependencies for server web app                |
+* **Backend:** FastAPI, Python
+* **Database:** MongoDB
+* **Streaming:** Apache Kafka
+* **UI:** Bootstrap + Jinja Templates
+* **Containerization:** Docker + Docker Compose
+* **Email:** Gmail SMTP
 
 ---
 
-### **producer/**
-
-Reads data from the socket server → publishes to Kafka.
-
-| File               | Description                                                         |
-| ------------------ | ------------------------------------------------------------------- |
-| `producer.py`      | Connects to socket → sends messages to Kafka topic `device_streams` |
-| `Dockerfile`       | Builds producer container                                           |
-| `requirements.txt` | Kafka dependencies (`kafka-python`)                                 |
-
----
-
-### **consumer/**
-
-Reads Kafka messages → stores them in **MongoDB**.
-
-| File               | Description                                                    |
-| ------------------ | -------------------------------------------------------------- |
-| `consumer.py`      | Subscribes to Kafka → inserts messages into MongoDB collection |
-| `Dockerfile`       | Builds consumer container                                      |
-| `requirements.txt` | Kafka + MongoDB dependencies                                   |
-
----
-
-# ⚙️ System Architecture
+## 📁 **5. Folder Structure**
 
 ```
-    [server/socket_server.py]
-               ↓ TCP (5050)
-     [producer/producer.py]
-               ↓ Kafka Topic (device_streams)
-      [Kafka Broker + Zookeeper]
-               ↓
-      [consumer/consumer.py]
-               ↓
-           [MongoDB]
+FullStack/
+ ├── server/
+ │   ├── app/
+ │   │   ├── core/ (config, security, dependencies)
+ │   │   ├── db/ (mongo connection)
+ │   │   ├── routes/ (auth, admin, shipments, profile, streams)
+ │   │   ├── utils/ (email, tokens, password helpers)
+ │   │   ├── main.py
+ │   ├── templates/ + static/
+ │   ├── Dockerfile
+ │   └── socket_server.py
+ ├── producer/ (Kafka producer)
+ ├── consumer/ (Kafka consumer)
+ ├── kafka-init.sh
+ ├── docker-compose.yml
+ └── .env
 ```
-
----
-
-# 📌 MongoDB Usage
-
-The consumer stores each incoming device packet into a MongoDB collection.
-
-Example document stored:
-
-```json
-{
-  "Device_ID": 1156,
-  "Battery_Level": 3.85,
-  "Temperature": 27.1,
-  "Route_From": "Chennai, India",
-  "Route_To": "London, UK",
-  "Timestamp": "2025-11-14 17:27:36"
-}
-```
-
-MongoDB connection example used in consumer:
-
-```python
-from pymongo import MongoClient
-client = MongoClient("mongodb://mongo:27017/")
-db = client["iot_stream"]
-collection = db["device_logs"]
-collection.insert_one(message)
-```
-
----
-
-# 🧪 Running the Pipeline (Effective Instructions)
-
-## **1️⃣ Start MongoDB, Kafka & Zookeeper**
-
-Using Docker Compose (root-level `docker-compose.yml`):
-
-```bash
-docker compose up --build
-```
-
-Starts:
-
-* Zookeeper
-* Kafka broker
-* MongoDB
-* Producer
-* Consumer
-* Socket server
-
----
-
-## **2️⃣ View Logs**
-
-Socket server:
-
-```bash
-docker logs -f socket-server
-```
-
-Producer:
-
-```bash
-docker logs -f producer
-```
-
-Consumer:
-
-```bash
-docker logs -f consumer
-```
-
----
-
-## **3️⃣ Verify MongoDB Storage**
-
-Enter MongoDB shell:
-
-```bash
-docker exec -it mongo mongosh
-use iot_stream
-db.device_logs.find().pretty()
-```
-
----
-
-# ✔️ Summary
-
-This repository provides a complete **real-time streaming stack**:
-
-* Synthetic IoT data generator 
-* Kafka producer → Kafka topic
-* Kafka consumer → MongoDB insert
-* Dockerized and modular
-* Clean separation of server, producer, and consumer
 

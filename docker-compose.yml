@@ -80,12 +80,14 @@ services:
       - EMAIL_SENDER=${EMAIL_SENDER}
       - EMAIL_PASSWORD=${EMAIL_PASSWORD}
       - ADMIN_EMAIL=${ADMIN_EMAIL}
-      - ADMIN_PASSWORD=${ADMIN_PASSWORD} 
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
     ports:
       - "8000:8000"
+
+    # NEW FIXED VOLUMES (pointing to app/)
     volumes:
-      - ./server/templates:/app/templates:ro
-      - ./server/static:/app/static:ro
+      - ./app:/app/app:ro
+
     networks:
       - fullstack_net
     healthcheck:
@@ -96,7 +98,7 @@ services:
     restart: on-failure
 
   # ---------------------------------------------------------
-  # SOCKET SERVER (fake device stream)
+  # SOCKET SERVER
   # ---------------------------------------------------------
   socket-server:
     build:
@@ -155,7 +157,7 @@ services:
     restart: always
 
   # ---------------------------------------------------------
-  # KAFKA INIT SCRIPT (create topic)
+  # KAFKA INIT SCRIPT
   # ---------------------------------------------------------
   kafka-init:
     image: confluentinc/cp-kafka:7.6.1
