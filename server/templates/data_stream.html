@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card-custom">
+  <h3 class="fw-bold mb-3 text-center">Live Streaming Data From Socket Server</h3>
+
+  <div class="table-responsive">
+    <table class="table table-hover align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>Device ID</th>
+          <th>Battery</th>
+          <th>Temperature</th>
+          <th>Humidity</th>
+          <th>Route</th>
+          <th>Timestamp</th>
+        </tr>
+      </thead>
+      <tbody id="dataBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  async function loadData() {
+    try {
+      const res = await fetch("/api/stream");
+      const json = await res.json();
+      const data = json.data || [];
+
+      const body = document.getElementById("dataBody");
+      body.innerHTML = "";
+
+      data.forEach(row => {
+        body.innerHTML += `
+          <tr>
+            <td>${row.Device_ID ?? ""}</td>
+            <td>${row.Battery_Level ?? ""}</td>
+            <td>${row.Temperature ?? ""}</td>
+            <td>${row.Humidity ?? ""}</td>
+            <td>${row.Route_From ?? ""} → ${row.Route_To ?? ""}</td>
+            <td>${row.Timestamp ?? ""}</td>
+          </tr>`;
+      });
+
+    } catch (err) {
+      console.error("Stream fetch error:", err);
+    }
+  }
+
+  setInterval(loadData, 2000);  // refresh every 2 seconds
+  loadData();
+</script>
+
+
+
+{% endblock %}

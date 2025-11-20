@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCMLite - Login</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background-color: white;
+            max-width: 1100px;
+            width: 100%;
+            min-height: 600px;
+            border-radius: 24px;
+            box-shadow: 0 15px 60px rgba(44,62,80,0.20);
+            overflow: hidden;
+            display: flex;
+        }
+
+        .left-panel {
+            flex: 1;
+            background: #2c3e50;
+            color: white;
+            padding: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .right-panel {
+            flex: 1.2;
+            padding: 50px 60px;
+        }
+
+        .login-type-btn {
+            padding: 12px 22px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: .2s ease;
+        }
+
+        .active-tab {
+            background: #3498db;
+            color: white;
+            box-shadow: 0 4px 12px rgba(52,152,219,0.4);
+        }
+
+        .inactive-tab {
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+
+        .input-field {
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+            background: #fcfcfc;
+            width: 100%;
+            font-size: 16px;
+            transition: .25s;
+        }
+
+        .input-field:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 6px rgba(52,152,219,0.4);
+            outline: none;
+        }
+
+        .submit-btn {
+            padding: 16px;
+            background: #3498db;
+            color: white;
+            border-radius: 12px;
+            font-weight: 700;
+            width: 100%;
+            transition: .2s;
+            box-shadow: 0 5px 12px rgba(52,152,219,0.3);
+        }
+
+        .submit-btn:hover {
+            background: #2980b9;
+            transform: translateY(-1px);
+        }
+
+        .flash {
+            background: #fff8eb;
+            border: 1px solid #f9e2c6;
+            color: #a0522d;
+            padding: 12px;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="login-container">
+
+    <!-- LEFT PANEL -->
+    <div class="left-panel">
+        <h2 class="text-4xl font-extrabold mb-4">Welcome to SCMLite</h2>
+        <p class="opacity-80 mb-6">
+            Manage logistics, shipments & IoT data — all in one place.
+        </p>
+
+        <a href="/signup">
+            <button class="bg-green-500 hover:bg-green-600 transition px-6 py-3 rounded-lg font-semibold">
+                Create Account
+            </button>
+        </a>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="right-panel">
+
+        <!-- SCMLITE HEADER -->
+        <h2 class="text-4xl font-extrabold text-center text-black mb-6">
+            SCMLite
+        </h2>
+
+        {% if flash %}
+        <div class="flash">{{ flash }}</div>
+        {% endif %}
+
+        <!-- Login Tabs -->
+        <div class="flex justify-center gap-4 mb-6">
+            <button id="userBtn" class="login-type-btn active-tab">User Login</button>
+            <button id="adminBtn" class="login-type-btn active-tab">Admin Login</button>
+        </div>
+
+        <!-- USER LOGIN FORM -->
+        <form id="userForm" method="POST" action="/" class="flex flex-col gap-5">
+            <input type="email" name="email" placeholder="Email Address" class="input-field" required>
+            <input type="password" name="password" placeholder="Password" class="input-field" required>
+
+            <button class="submit-btn">Login</button>
+        </form>
+
+        <!-- ADMIN LOGIN FORM -->
+        <form id="adminForm" method="POST" action="/admin-login" class="flex flex-col gap-5 hidden">
+            <input type="email" name="email" placeholder="Admin Email" class="input-field" required>
+            <input type="password" name="password" placeholder="Admin Password" class="input-field" required>
+
+            <button class="submit-btn bg-red-600 hover:bg-red-700">Admin Login</button>
+        </form>
+
+    </div>
+</div>
+
+<script>
+    const userBtn = document.getElementById("userBtn");
+    const adminBtn = document.getElementById("adminBtn");
+    const userForm = document.getElementById("userForm");
+    const adminForm = document.getElementById("adminForm");
+
+    userBtn.onclick = () => {
+        userBtn.classList.add("active-tab");
+        adminBtn.classList.remove("active-tab");
+        adminBtn.classList.add("inactive-tab");
+        userForm.classList.remove("hidden");
+        adminForm.classList.add("hidden");
+    };
+
+    adminBtn.onclick = () => {
+        adminBtn.classList.add("active-tab");
+        userBtn.classList.remove("active-tab");
+        userBtn.classList.add("inactive-tab");
+        adminForm.classList.remove("hidden");
+        userForm.classList.add("hidden");
+    };
+</script>
+
+</body>
+</html>

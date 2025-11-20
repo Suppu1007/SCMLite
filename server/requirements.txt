@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+python-dotenv
+pymongo
+python-jose
+bcrypt
+jinja2
+python-multipart
+kafka-python
