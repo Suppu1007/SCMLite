@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>{{ title or "SCMLite" }}</title>
 
-  <!-- Bootstrap (CSS only) -->
+  <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-  <!-- Inter Font & Material Icons -->
+  <!-- Fonts & Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
@@ -19,17 +19,16 @@
       background-color: #f0f4f8;
       opacity: 0;
       animation: fadeIn .45s ease-out forwards;
-      display: flex;
-      flex-direction: column;
       margin: 0;
+      display: flex; flex-direction: column;
     }
-
-    .main-wrapper { flex: 1; }
 
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(6px); }
       to   { opacity: 1; transform: translateY(0); }
     }
+
+    .main-wrapper { flex: 1; }
 
     /* NAVBAR */
     .navbar-custom {
@@ -46,11 +45,14 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      height: 58px;
       padding: 0 10px !important;
-      transition: color .18s ease;
+      height: 58px;
+      transition: .18s ease;
     }
-    .nav-link.active, .nav-link:hover { color: #4fc3f7 !important; }
+    .nav-link.active,
+    .nav-link:hover {
+      color: #4fc3f7 !important;
+    }
 
     /* Cards */
     .card-custom {
@@ -60,11 +62,11 @@
       box-shadow: 0 10px 30px rgba(44,62,80,.08);
     }
 
-    /* mobile header */
+    /* MOBILE HEADER */
     .mobile-header { display: none; }
+
     @media(max-width:768px) {
       .navbar-custom { display: none; }
-      body { padding-top: 64px; padding-bottom: 72px; }
       .mobile-header {
         height: 56px;
         background: #2c3e50;
@@ -72,55 +74,53 @@
         position: fixed;
         top: 0; left: 0; right: 0;
         z-index: 9999;
-        display:flex; justify-content:space-between; align-items:center;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
         padding: 0 14px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.14);
+        box-shadow:0 4px 10px rgba(0,0,0,0.14);
       }
-      .mobile-header-title { font-size: 18px; font-weight:700; display:flex; align-items:center; gap:6px; }
-      .mobile-header-icons a { color: white; margin-left: 12px; font-size: 22px; }
+      body { padding-top: 64px; padding-bottom: 72px; }
     }
 
-    /* mobile bottom nav */
+    /* MOBILE NAV */
     .mobile-nav { display:none; }
     @media(max-width:768px) {
       .mobile-nav {
-        display:flex; justify-content:space-around; background:#2c3e50;
-        padding:10px 0; position:fixed; bottom:0; width:100%; z-index:9999;
+        display:flex;
+        justify-content:space-around;
+        background:#2c3e50;
+        padding:10px 0;
+        position:fixed;
+        bottom:0; width:100%;
+        z-index:9999;
       }
-      .mobile-nav a { color:white; font-size:12px; text-align:center; }
-      .mobile-nav a.active { color:#4fc3f7; }
+      .mobile-nav a {
+        color:white;
+        font-size:12px;
+        text-align:center;
+      }
+      .mobile-nav a.active {
+        color:#4fc3f7;
+      }
     }
 
-    /* FAB */
-    .fab { position:fixed; bottom:90px; right:20px; background:#4fc3f7; color:white; width:56px; height:56px; border-radius:50%; display:flex; justify-content:center; align-items:center; font-size:28px; box-shadow:0 12px 30px rgba(79,195,247,.28); z-index:9998; }
-
-    footer { background:#2c3e50; color:#ecf0f1; text-align:center; padding:12px 0; box-shadow:0 -4px 10px rgba(0,0,0,0.06); }
-
-    /* small helper */
-    .user-badge { color: #2c3e50; background: #eaf8ff; border-radius: 12px; padding: 6px 10px; font-weight: 700; font-size: 0.9rem; margin-left: 8px; }
-
-    /* Flash container: position top center */
+    /* FLASH MESSAGE */
     #flash-container {
       position: fixed;
-      top: 70px;
-      left: 50%;
+      top: 70px; left: 50%;
       transform: translateX(-50%);
-      z-index: 11000;
       width: auto;
-      max-width: 92%;
-      display: flex;
-      justify-content: center;
+      z-index: 11000;
       pointer-events: none;
     }
-    #flash-container .alert {
-      pointer-events: auto;
-    }
+
   </style>
 </head>
 
 <body>
 
-  <!-- MOBILE TOP HEADER (small) -->
+  <!-- MOBILE HEADER -->
   <div class="mobile-header d-md-none">
     <div class="mobile-header-title">
       <span class="material-icons">local_shipping</span> SCMLite
@@ -131,9 +131,9 @@
     </div>
   </div>
 
-  <!-- DESKTOP NAVBAR -->
+  <!-- DESKTOP NAV -->
   <nav class="navbar navbar-expand-lg navbar-custom fixed-top d-none d-md-flex">
-    <a class="navbar-brand text-white fw-bold fs-5" href="/home" style="display:flex; align-items:center; gap:8px;">
+    <a class="navbar-brand text-white fw-bold fs-5" href="/home">
       <span class="material-icons">local_shipping</span> SCMLite
     </a>
 
@@ -151,14 +151,20 @@
         <span class="material-icons">add_box</span> Create Shipment
       </a>
 
+      <!-- ✔ FIXED TRACK LINK -->
+      <a class="nav-link {% if active_page=='track' %}active{% endif %}" href="/track_shipment">
+        <span class="material-icons">location_searching</span>
+        Track Shipment
+      </a>
+      
+    
       <a class="nav-link {% if active_page=='stream' %}active{% endif %}" href="/DataStream">
         <span class="material-icons">sensors</span> Data Stream
       </a>
 
-      <!-- ADMIN LINKS - displayed only if is_admin is truthy -->
       {% if is_admin %}
       <a class="nav-link {% if active_page=='users' %}active{% endif %}" href="/admin/users">
-        <span class="material-icons">group</span> User Management
+        <span class="material-icons">group</span> Users
       </a>
 
       <a class="nav-link {% if active_page=='role_history' %}active{% endif %}" href="/admin/role-history">
@@ -166,8 +172,6 @@
       </a>
       {% endif %}
 
-
-      <!-- profile / logout -->
       <a class="nav-link {% if active_page=='profile' %}active{% endif %}" href="/profile">
         <span class="material-icons">account_circle</span> Profile
       </a>
@@ -175,21 +179,27 @@
       <a class="nav-link text-danger" href="/logout">
         <span class="material-icons">logout</span> Logout
       </a>
+
     </div>
   </nav>
 
-  <!-- MOBILE BOTTOM NAV -->
+  <!-- MOBILE NAVIGATION -->
   <div class="mobile-nav d-md-none">
+
     <a href="/home" class="{% if active_page=='home' %}active{% endif %}">
       <span class="material-icons">home</span><br>Home
     </a>
 
     <a href="/dashboard" class="{% if active_page=='dashboard' %}active{% endif %}">
-      <span class="material-icons">dashboard</span><br>Dash
+      <span class="material-icons">dashboard</span><br>Dashboard
     </a>
 
     <a href="/create-shipment" class="{% if active_page=='create' %}active{% endif %}">
       <span class="material-icons">add_box</span><br>Create
+    </a>
+
+    <a href="/track_shipment" class="{% if active_page=='track' %}active{% endif %}">
+      <span class="material-icons">travel_explore</span><br>Track
     </a>
 
     <a href="/DataStream" class="{% if active_page=='stream' %}active{% endif %}">
@@ -200,32 +210,24 @@
     <a href="/admin/users" class="{% if active_page=='users' %}active{% endif %}">
       <span class="material-icons">group</span><br>Users
     </a>
-
-    <a href="/admin/role-history" class="{% if active_page=='role_history' %}active{% endif %}">
-      <span class="material-icons">history</span><br>History
-    </a>
     {% endif %}
 
     <a href="/profile" class="{% if active_page=='profile' %}active{% endif %}">
       <span class="material-icons">account_circle</span><br>Profile
     </a>
+
   </div>
 
-  <!-- FAB (only on home pages) -->
-  {% if active_page == "home" %}
-    <a href="/create-shipment" class="fab d-none d-md-flex" title="Create Shipment"><span class="material-icons">add</span></a>
-  {% endif %}
-
-  <!-- FLASH / TOAST container (top center). Server should render `flash` string if present -->
-  <div id="flash-container" aria-live="polite" aria-atomic="true">
+  <!-- FLASH -->
+  <div id="flash-container">
     {% if flash %}
-      <div id="global-flash" class="alert alert-info shadow-sm" role="alert" style="border-radius:10px;">
-        {{ flash }}
-      </div>
+    <div id="global-flash" class="alert alert-info shadow-sm" role="alert">
+      {{ flash }}
+    </div>
     {% endif %}
   </div>
 
-  <!-- MAIN CONTENT -->
+  <!-- PAGE CONTENT -->
   <div class="main-wrapper">
     <div class="container pt-5 mt-4">
       {% block content %}{% endblock %}
@@ -233,18 +235,14 @@
   </div>
 
   <!-- FOOTER -->
-  <footer>
-    <div>
-      <span class="material-icons" style="font-size:16px;">copyright</span>
-      <strong>2025 SCMLite • All Rights Reserved</strong><br>
-      <small>Powered by Suppu</small>
-    </div>
+  <footer class="text-center text-white" style="background:#2c3e50; padding:12px 0;">
+    <small>© 2025 SCMLite • Powered by Suppu</small>
   </footer>
 
-  <!-- Bootstrap JS  -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
+    // Flash fade-in/out
     (function() {
       const flash = document.getElementById('global-flash');
       if (!flash) return;
@@ -258,8 +256,8 @@
       setTimeout(() => {
         flash.style.opacity = '0';
         flash.style.transform = 'translateY(-6px)';
-        setTimeout(() => { flash.remove(); }, 300);
-      }, 3000); 
+        setTimeout(() => flash.remove(), 300);
+      }, 3000);
     })();
   </script>
 

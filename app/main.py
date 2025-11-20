@@ -9,6 +9,7 @@ from app.routes.shipments import router as shipments_router
 from app.routes.streams import router as streams_router
 from app.routes.admin import router as admin_router
 from app.routes.users import router as users_router
+from app.routes.tracking import router as tracking_router
 
 from app.core.config import ensure_default_admin
 
@@ -17,7 +18,7 @@ app = FastAPI(title="SCMLite")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
-# Routers
+# include routers
 app.include_router(auth_router)
 app.include_router(home_router)
 app.include_router(profile_router)
@@ -25,7 +26,7 @@ app.include_router(shipments_router)
 app.include_router(streams_router)
 app.include_router(admin_router)
 app.include_router(users_router)
-
+app.include_router(tracking_router)
 
 @app.on_event("startup")
 def startup_event():
