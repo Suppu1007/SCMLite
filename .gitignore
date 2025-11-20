@@ -1,0 +1,37 @@
+# -------------------------
+# PYTHON VIRTUAL ENV
+# -------------------------
+bin/
+lib/
+lib64/
+include/
+pyvenv.cfg
+__pycache__/
+*.pyc
+
+# -------------------------
+# ENVIRONMENT FILES
+# -------------------------
+.env
+*.env
+
+# -------------------------
+# EDITOR / IDE
+# -------------------------
+.vscode/
+*.code-workspace
+
+# -------------------------
+# KAFKA & BIG BINARY FOLDERS
+# -------------------------
+kafka/
+kafka_2.13-3.4.0/
+# db/
+logs/
+*.log
+
+kafka-init.sh
+
+doc.odt
+
+
