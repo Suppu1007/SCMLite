@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Track Your Shipment</h2>
+
+    <!-- Search Box -->
+    <form method="post">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" name="shipment_id"
+                   placeholder="Enter Shipment ID" required>
+            <button class="btn btn-primary" type="submit">Track</button>
+        </div>
+    </form>
+
+    <!-- Error Message -->
+    {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    <!-- Search Result -->
+    {% if result %}
+    <div class="card shadow-sm mt-4">
+        <div class="card-body">
+            <h5 class="card-title">Shipment Details</h5>
+            <p><strong>Shipment ID:</strong> {{ result.shipment_id }}</p>
+            <p><strong>Sender:</strong> {{ result.sender_name }}</p>
+            <p><strong>Receiver:</strong> {{ result.receiver_name }}</p>
+            <p><strong>Destination:</strong> {{ result.destination }}</p>
+            <p><strong>Status:</strong> 
+                <span class="badge bg-info text-dark">{{ result.status }}</span>
+            </p>
+            <p><strong>Weight:</strong> {{ result.weight }} kg</p>
+            <p><strong>Created At:</strong> {{ result.created_at }}</p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}
