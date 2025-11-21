@@ -20,19 +20,15 @@ def send_role_change_email(to_email: str, old_role: str, new_role: str, changed_
     timestamp = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')
 
     body = f"""
-Hello,
+Hi {username},
 
-Your SCMLite account role has been updated.
+Your SCMLite role has been changed to: {new_role}.
 
-Old Role: {old_role}
-New Role: {new_role}
-Changed By: {changed_by}
-Date: {timestamp}
-
-If this action was not initiated by you, please contact SCMLite support immediately.
+If you didn’t request this change, please contact SCMLite support immediately.
 
 Regards,
 SCMLite Admin Team
+
 """.strip()
 
     try:
