@@ -15,7 +15,7 @@ from app.core.config import ensure_default_admin
 
 app = FastAPI(title="SCMLite")
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 # include routers
