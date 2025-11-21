@@ -1,0 +1,134 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ===== Global Background ===== */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: url("/static/images/logo.svg") no-repeat center center fixed;
+    background-size: cover;
+    opacity: 0.32;
+    z-index: -1;
+    filter: brightness(0.92);
+  }
+
+  /* MAIN CONTENT must expand */
+  .main-wrapper {
+    flex: 1;        /* Push footer down */
+    display: block;
+  }
+
+  /* ==============================
+     NAVBAR (NO animations)
+  ===============================*/
+  .navbar-custom {
+    background-color: #2c3e50;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    height: 58px;
+    display:flex;
+    align-items:center;
+    padding:0 14px;
+  }
+
+  .nav-link {
+    color:#ecf0f1 !important;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:0 12px !important;
+    height:58px;
+    transition:.18s ease;
+  }
+
+  .nav-link.active,
+  .nav-link:hover {
+    color:#4fc3f7 !important;
+  }
+
+  /* ==============================
+     CARD ANIMATION ONLY
+  ===============================*/
+  .card-custom {
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(44,62,80,0.18);
+
+    /* Only animation applied */
+    opacity: 0;
+    transform: translateY(28px) scale(0.96);
+    animation: cardFloatIn 0.75s ease-out forwards;
+  }
+
+  @keyframes cardFloatIn {
+    0% {
+      opacity: 0;
+      transform: translateY(28px) scale(0.96);
+    }
+    60% {
+      opacity: 1;
+      transform: translateY(-4px) scale(1.02);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* ==============================
+     MOBILE HEADER + NAV
+  ===============================*/
+  .mobile-header { display:none; }
+
+  @media(max-width:768px) {
+    .navbar-custom { display:none; }
+
+    .mobile-header {
+      height:56px;
+      background:#2c3e50;
+      color:white;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:0 14px;
+      position:fixed;
+      top:0; left:0; right:0;
+      z-index:9999;
+      box-shadow:0 4px 10px rgba(0,0,0,0.14);
+    }
+
+    body {
+      padding-top:64px;
+      padding-bottom:72px;
+    }
+
+    .mobile-nav {
+      display:flex;
+      justify-content:space-around;
+      background:#2c3e50;
+      padding:10px 0;
+      position:fixed;
+      bottom:0; width:100%;
+      z-index:9999;
+    }
+
+    .mobile-nav a {
+      color:white;
+      font-size:12px;
+      text-align:center;
+    }
+
+    .mobile-nav a.active {
+      color:#4fc3f7;
+    }
+  }
+
