@@ -87,7 +87,8 @@ services:
     # NEW FIXED VOLUMES (pointing to app/)
     volumes:
       - ./app:/app/app:ro
-
+      - ./app/templates:/app/templates:ro
+      - ./app/static:/app/static:ro
     networks:
       - fullstack_net
     healthcheck:
