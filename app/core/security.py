@@ -19,8 +19,7 @@ def verify_password(password: str, hashed: str) -> bool:
     try:
         return bcrypt.checkpw(password.encode(), hashed.encode())
     except Exception:
-        return False  # prevents crash if hashed value is corrupted
-
+        return False  
 
 # -----------------------------------------------------------
 # JWT TOKENS
