@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCMLite - Login</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+        <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+     <!-- SCMLite auth Theme -->
+     <link rel="stylesheet" href="{{ url_for('static', path='style/login.css') }}">
+
+</head>
+
+<body>
+<div class="bg-image"></div>    
+
+<div class="login-container">
+
+    <!-- LEFT PANEL -->
+    <div class="left-panel">
+        <h2 class="text-4xl font-extrabold mb-4">Welcome to SCMLite</h2>
+        <p class="opacity-80 mb-6">
+            Manage logistics, shipments & IoT data — all in one place.
+        </p>
+
+        <a href="/signup">
+            <button class="bg-green-500 hover:bg-green-600 transition px-6 py-3 rounded-lg font-semibold">
+                Create Account
+            </button>
+        </a>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="right-panel">
+
+        <h2>SCMLite</h2>
+
+        {% if flash %}
+        <div class="flash">{{ flash }}</div>
+        {% endif %}
+
+        <!-- Login Tabs -->
+        <div class="flex justify-center gap-4 mb-6">
+            <button id="userBtn" class="login-type-btn active-tab">User Login</button>
+            <button id="adminBtn" class="login-type-btn inactive-tab">Admin Login</button>
+        </div>
+
+        <!-- USER FORM -->
+        <form id="userForm" method="POST" action="/" class="flex flex-col gap-5">
+            <input type="email" name="email" placeholder="Email Address" class="input-field" required>
+            <input type="password" name="password" placeholder="Password" class="input-field" required>
+            <div class="g-recaptcha my-3"
+                data-sitekey="{{ recaptcha_sitekey }}">
+            </div>
+
+            <button class="submit-btn">Login</button>
+        </form>
+
+        <!-- ADMIN FORM -->
+        <form id="adminForm" method="POST" action="/admin-login" class="flex flex-col gap-5 hidden">
+            <input type="email" name="email" placeholder="Admin Email" class="input-field">
+            <input type="password" name="password" placeholder="Admin Password" class="input-field">
+            <div class="g-recaptcha my-3"
+                data-sitekey="{{ recaptcha_sitekey }}">
+            </div>
+
+            <button class="submit-btn ">Admin Login</button>
+        </form>
+
+    </div>
+</div>
+
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script>
+    const userBtn = document.getElementById("userBtn");
+    const adminBtn = document.getElementById("adminBtn");
+    const userForm = document.getElementById("userForm");
+    const adminForm = document.getElementById("adminForm");
+
+    userBtn.onclick = () => {
+        userBtn.classList.add("active-tab");
+        userBtn.classList.remove("inactive-tab");
+
+        adminBtn.classList.remove("active-tab");
+        adminBtn.classList.add("inactive-tab");
+
+        userForm.classList.remove("hidden");
+        adminForm.classList.add("hidden");
+    };
+
+    adminBtn.onclick = () => {
+        adminBtn.classList.add("active-tab");
+        adminBtn.classList.remove("inactive-tab");
+
+        userBtn.classList.remove("active-tab");
+        userBtn.classList.add("inactive-tab");
+
+        adminForm.classList.remove("hidden");
+        userForm.classList.add("hidden");
+    };
+</script>
+
+</body>
+</html>

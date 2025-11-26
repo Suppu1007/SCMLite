@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+pymongo[srv]
+python-dotenv
+email-validator
+jinja2
+bcrypt
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart
+kafka-python

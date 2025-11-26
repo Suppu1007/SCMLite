@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2 class="fw-bold mb-4">Dashboard</h2>
+
+<!-- ===== ADMIN DASHBOARD METRICS ===== -->
+{% if is_admin %}
+<div class="row g-4">
+  <div class="col-md-4">
+    <div class="card-custom">
+      <h6 class="text-muted">Total Shipments</h6>
+      <h2 class="fw-bold">{{ shipment_count }}</h2>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card-custom">
+      <h6 class="text-muted">Active Devices</h6>
+      <h2 class="fw-bold">{{ active_devices }}</h2>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card-custom">
+      <h6 class="text-muted">Deliveries Today</h6>
+      <h2 class="fw-bold">{{ deliveries_today }}</h2>
+    </div>
+  </div>
+</div>
+
+<hr class="my-4">
+
+<h4 class="fw-bold mb-3">Recent Shipment Activity</h4>
+<div class="card-custom p-3">
+  {% if recent_shipments %}
+    <ul class="list-unstyled">
+      {% for s in recent_shipments %}
+      <li class="mb-2">
+        <strong>{{ s.shipment_id }}</strong> — {{ s.status }} → {{ s.destination.title() }}
+      </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="text-muted">No recent shipment activity.</p>
+  {% endif %}
+</div>
+{% endif %}
+
+
+<!-- ===== USER DASHBOARD ONLY ===== -->
+{% if not is_admin %}
+<hr class="my-4">
+<h4 class="fw-bold mb-3">My Shipments</h4>
+
+<div class="card-custom p-3">
+  {% if my_shipments %}
+  <table class="table table-sm table-bordered">
+    <thead class="table-light">
+      <tr>
+        <th>Shipment ID</th>
+        <th>Status</th>
+        <th>Destination</th>
+        <th>Last Updated</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for s in my_shipments %}
+      <tr>
+        <td><strong>{{ s.shipment_id }}</strong></td>
+        <td><span class="badge bg-info">{{ s.status }}</span></td>
+        <td>{{ s.destination.title() }}</td>
+        <td>{{ s.last_updated.strftime("%Y-%m-%d") if s.last_updated else "N/A" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <p class="text-muted">You are not associated with any shipments yet.</p>
+  {% endif %}
+</div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,96 @@
+<!-- templates/track_shipment.html -->
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h2 class=" fw-bold mb-4 text-center">Track Shipment</h2>
+
+  <form method="post" class="mb-3">
+    <div class="input-group">
+      <input type="text" name="shipment_id" class="form-control" placeholder="Enter Shipment ID (e.g. S1007)" required>
+      <button class="btn" type="submit" style="background:#2c3e50;color:white;border:none;">Track</button>
+    </div>
+  </form>
+
+  {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+  {% endif %}
+
+  {% if result %}
+  <div class="row g-4">
+    <div class="col-md-6">
+      <div class="card card-custom">
+        <div class="card-body">
+          <h5 class="card-title fw-bold mb-4 text-center">Shipment Details</h5>
+          <p><strong>Shipment ID:</strong> {{ result.shipment_id }}</p>
+          <p><strong>Sender:</strong> {{ result.sender_name }} {% if result.sender_email %}<small>({{ result.sender_email }})</small>{% endif %}</p>
+          <p><strong>Receiver:</strong> {{ result.receiver_name }} {% if result.receiver_email %}<small>({{ result.receiver_email }})</small>{% endif %}</p>
+          <p><strong>Initial Location:</strong> {{ result.initial_location }}</p>
+          <p><strong>Destination:</strong> {{ result.destination }}</p>
+          <p><strong>Current Location:</strong> {{ result.current_location }}</p>
+          <p><strong>Weight:</strong> {{ result.weight }} kg</p>
+          <p><strong>Status:</strong> <span class="badge bg-info text-dark">{{ result.status }}</span></p>
+          <p><strong>Created At:</strong> {{ result.created_at }}</p>
+          <p><strong>Last Updated:</strong> {{ result.last_updated }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card card-custom">
+        <div class="card-body">
+          <h5 class="card-title fw-bold mb-4 text-center">Live Sensor Data</h5>
+          {% if last_iot %}
+          <p><strong>Device ID:</strong>{{ last_iot.Device_ID or last_iot["Device_ID"] }}</p>
+          <p><strong>Temperature:</strong>{{ last_iot.Temperature or last_iot["Temperature"] }}</p>
+          <p><strong>Humidity:</strong>{{ last_iot.Humidity or last_iot["Humidity"] }}</p>
+          <p><strong>Battery:</strong>{{ last_iot.Battery_Level or last_iot["Battery_Level"] }}</p>
+          <p><strong>Route:</strong> {{ last_iot.Route_From or last_iot["Route_From"] }} → {{ last_iot.Route_To or last_iot["Route_To"] }}</p>
+          <p><small class="text-muted">Timestamp: {{ last_iot.Timestamp or last_iot.get("Timestamp") }}</small></p>
+        {% else %}
+          <p class="text-muted">No live sensor data yet.</p>
+        {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12">
+      <div class="card card-custom">
+        <div class="card-body">
+          <h5 class="card-title fw-bold mb-4 text-center">Status History (latest first)</h5>
+          {% if history %}
+          <div class="table-responsive">
+            <table class="table table-sm">
+              <thead style="background:#2c3e50;color:white;">
+                <tr>
+                  <th>Time</th>
+                  <th>From</th>
+                  <th>To</th>
+                  <th>Temp</th>
+                  <th>Humidity</th>
+                  <th>Battery</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for h in history %}
+                <tr>
+                  <td>{{ h.ts }}</td>
+                  <td>{{ h.from }}</td>
+                  <td>{{ h.to }}</td>
+                  <td>{{ h.iot.Temperature if h.iot else "-" }}</td>
+                  <td>{{ h.iot.Humidity if h.iot else "-" }}</td>
+                  <td>{{ h.iot.Battery_Level if h.iot else "-" }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+            <p class="text-muted">No status history available.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SCMLite - Sign Up</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- fonts  -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- SCMLite auth Theme --> 
+  <link rel="stylesheet" href="{{ url_for('static', path='style/signup.css') }}">
+</head>
+
+<body>
+
+<div class="signup-container">
+
+  <!-- RIGHT PANEL (Form) -->
+  <div class="right-panel">
+    <h2>SCMLite</h2>
+    <h3>Create Your Account</h3>
+
+    {% if flash %}
+    <div class="flash">{{ flash }}</div>
+    {% endif %}
+
+    <form method="POST" action="/signup" class="signup-form">
+      <input type="text" name="fullname" class="signup-input"
+             placeholder="Enter your full name"
+             value="{{ prefill_name or '' }}" required>
+
+      <input type="email" name="email" class="signup-input"
+             placeholder="Enter your email address"
+             value="{{ prefill_email or '' }}" required>
+
+      <input type="password" name="password" class="signup-input"
+             placeholder="Create a secure password" required>
+
+      <input type="password" name="confirm_password" class="signup-input"
+             placeholder="Re-enter your password" required>
+
+      <button class="signup-btn" type="submit">Create Account</button>
+      <small class="text-gray-600">By signing up, you agree to our Terms & Conditions.</small>
+    </form>
+  </div>
+
+  <!-- LEFT PANEL -->
+  <div class="left-panel">
+    <h3>Welcome Back!</h3>
+    <p>Already have an account? Log in to continue managing your supply chain operations efficiently.</p>
+    <a href="/"><button class="alt-button">Sign In</button></a>
+  </div>
+
+</div>
+
+</body>
+</html>

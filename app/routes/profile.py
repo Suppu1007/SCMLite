@@ -1,0 +1,54 @@
+from fastapi import APIRouter, Request, Form, Depends
+from fastapi.responses import RedirectResponse
+from fastapi.templating import Jinja2Templates
+
+from app.core.config import users_collection
+from app.core.security import hash_password
+from app.core.dependencies import get_current_user, is_admin_by_email
+
+router = APIRouter()
+templates = Jinja2Templates(directory="templates")
+
+
+# -----------------------------------------------------------
+# PROFILE VIEW
+# -----------------------------------------------------------
+@router.get("/profile")
+async def profile_page(request: Request, user_email: str = Depends(get_current_user)):
+    flash = request.cookies.get("flash")
+    user = users_collection.find_one({"email": user_email}, {"password": 0})
+
+    context = {
+        "request": request,
+        "user": user,
+        "active_page": "profile",
+        "is_admin": is_admin_by_email(user_email),
+        "flash": flash
+    }
+
+    resp = templates.TemplateResponse("profile.html", context)
+    if flash:
+        resp.delete_cookie("flash")
+    return resp
+
+
+# -----------------------------------------------------------
+# PROFILE UPDATE
+# -----------------------------------------------------------
+@router.post("/profile")
+async def update_profile(
+        request: Request,
+        fullname: str = Form(...),
+        new_password: str = Form(None),
+        user_email: str = Depends(get_current_user),
+):
+    update_data = {"name": fullname}
+
+    if new_password and new_password.strip():
+        update_data["password"] = hash_password(new_password)
+
+    users_collection.update_one({"email": user_email}, {"$set": update_data})
+
+    response = RedirectResponse("/profile", status_code=303)
+    response.set_cookie("flash", "Profile updated", max_age=3)
+    return response

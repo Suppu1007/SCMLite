@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="d-flex justify-content-center mt-4">
+  <div class="card card-custom shadow-lg p-4" style="max-width: 1100px; width: 100%;">
+
+    <h3 class="fw-bold mb-4 text-center">User Management</h3>
+
+    {% if flash %}
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
+        {{ flash }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endif %}
+
+    <div class="table-responsive mt-3">
+      <table class="table table-bordered table-hover align-middle">
+
+        <thead class="table-dark text-center">
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Current Role</th>
+            <th>Status</th>
+            <th>Modify Role</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+        {% for user in users %}
+        <tr>
+
+          <!-- NAME -->
+          <td class="fw-semibold">{{ user.name }}</td>
+
+          <!-- EMAIL -->
+          <td>{{ user.email }}</td>
+
+          <!-- CURRENT ROLE -->
+          <td class="text-center">
+            <span class="badge bg-primary">{{ user.role }}</span>
+          </td>
+
+          <!-- STATUS -->
+          <td class="text-center">
+            {% if user.status == "Active" %}
+              <span class="badge bg-success">Active</span>
+            {% elif user.status == "Pending" %}
+              <span class="badge bg-warning text-dark">Pending</span>
+            {% else %}
+              <span class="badge bg-danger">Disabled</span>
+            {% endif %}
+          </td>
+
+          <!-- MODIFY ROLE -->
+          <td class="text-center">
+            <form method="POST" action="/admin/users" class="d-flex justify-content-center align-items-center gap-2">
+              <input type="hidden" name="user_email_target" value="{{ user.email }}">
+              <select name="new_role" class="form-select form-select-sm" style="width:auto;">
+                <option value="User" {% if user.role == "User" %}selected{% endif %}>User</option>
+                <option value="Manager" {% if user.role == "Manager" %}selected{% endif %}>Manager</option>
+                <option value="Admin" {% if user.role == "Admin" %}selected{% endif %}>Admin</option>
+              </select>
+              <button name="action" value="update" class="btn btn-primary btn-sm">
+                Update
+              </button>
+            </form>
+          </td>
+
+          <!-- ACTION BUTTONS -->
+          <td class="text-center">
+            <div class="d-flex justify-content-center gap-2">
+
+              <form method="POST" action="/admin/users" class="d-inline">
+                <input type="hidden" name="user_email_target" value="{{ user.email }}">
+                <input type="hidden" name="new_role" value="{{ user.role }}">
+                <button name="action" value="approve" class="btn btn-success btn-sm">Approve</button>
+              </form>
+
+              <form method="POST" action="/admin/users" class="d-inline">
+                <input type="hidden" name="user_email_target" value="{{ user.email }}">
+                <input type="hidden" name="new_role" value="{{ user.role }}">
+                <button name="action" value="disable" class="btn btn-danger btn-sm">Disable</button>
+              </form>
+
+            </div>
+          </td>
+
+        </tr>
+        {% endfor %}
+        </tbody>
+
+      </table>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card-custom p-4">
+  <h3 class="fw-bold mb-3">Role Change History</h3>
+
+  {% if flash %}
+  <div class="alert alert-info alert-dismissible fade show mb-3">
+    {{ flash }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+  {% endif %}
+
+  <div class="table-responsive">
+    <table class="table table-striped table-bordered align-middle">
+      <thead class="table-dark">
+        <tr>
+          <th>Target User</th>
+          <th>Changed By</th>
+          <th>Old Role</th>
+          <th>New Role</th>
+          <th>Changed At</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if history %}
+          {% for r in history %}
+          <tr>
+            <td class="fw-semibold">{{ r.target_user }}</td>
+            <td>{{ r.changed_by }}</td>
+            <td class="text-danger">{{ r.old_role }}</td>
+            <td class="text-success">{{ r.new_role }}</td>
+            <td><small>{{ r.timestamp }}</small></td>
+          </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="5" class="text-center text-muted">No role changes logged yet.</td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+
+  <a class="btn btn-secondary btn-sm mt-3" href="/admin/users">
+    ← Back to Users
+  </a>
+
+</div>
+
+{% endblock %}
