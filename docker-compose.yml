@@ -1,0 +1,181 @@
+version: "3.9"
+
+services:
+  # ---------------------------------------------------------
+  # KAFKA BROKER (KRaft Mode — No Zookeeper)
+  # ---------------------------------------------------------
+  kafka:
+    image: apache/kafka:3.7.0
+    container_name: kafka
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka:9093"
+
+      # Listeners
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://kafka:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+
+      # Storage for metadata (replaces Zookeeper)
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+
+      # Must be valid UUID
+      KAFKA_CLUSTER_ID: "a159S-dnSraikSoxeAJaEg"
+
+      # Single-cluster overrides
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+
+    ports:
+      - "9092:9092"
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    networks:
+      - fullstack_net
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server kafka:9092 --list || exit 1"]
+      interval: 12s
+      timeout: 5s
+      retries: 20
+      start_period: 40s
+    restart: unless-stopped
+
+  # ---------------------------------------------------------
+  # KAFKA UI Dashboard
+  # ---------------------------------------------------------
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka_ui
+    depends_on:
+      kafka:
+        condition: service_healthy
+    environment:
+      KAFKA_CLUSTERS_0_NAME: "local"
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "kafka:9092"
+    ports:
+      - "8080:8080"
+    networks:
+      - fullstack_net
+    restart: unless-stopped
+
+  # ---------------------------------------------------------
+  # FASTAPI App
+  # ---------------------------------------------------------
+  server:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: app
+    depends_on:
+      kafka:
+        condition: service_healthy
+    environment:
+      - MONGO_URL=${MONGO_URL}
+      - DB_NAME=${DB_NAME}
+      - KAFKA_BROKER=kafka:9092
+      - SECRET_KEY=${SECRET_KEY}
+      - SOCKET_HOST=${SOCKET_HOST}
+      - SOCKET_PORT=${SOCKET_PORT}
+      - EMAIL_SENDER=${EMAIL_SENDER}
+      - EMAIL_PASSWORD=${EMAIL_PASSWORD}
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/app/app:ro
+      - ./app/templates:/app/templates:ro
+      - ./app/static:/app/static:ro
+    networks:
+      - fullstack_net
+    restart: on-failure
+
+  # ---------------------------------------------------------
+  # SOCKET SERVER
+  # ---------------------------------------------------------
+  socket-server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: socket_server
+    depends_on:
+      - server
+    environment:
+      - SOCKET_PORT=${SOCKET_PORT}
+    ports:
+      - "9999:9999"
+    networks:
+      - fullstack_net
+    restart: on-failure
+
+  # ---------------------------------------------------------
+  # Kafka Producer
+  # ---------------------------------------------------------
+  kafka_producer:
+    build:
+      context: ./producer
+      dockerfile: Dockerfile
+    container_name: kafka_producer
+    depends_on:
+      kafka:
+        condition: service_healthy
+      socket-server:
+        condition: service_started
+    environment:
+      - KAFKA_BROKER=kafka:9092
+      - SOCKET_HOST=${SOCKET_HOST}
+      - SOCKET_PORT=${SOCKET_PORT}
+    networks:
+      - fullstack_net
+    restart: on-failure
+
+  # ---------------------------------------------------------
+  # Kafka Consumer
+  # ---------------------------------------------------------
+  kafka_consumer:
+    build:
+      context: .
+      dockerfile: ./consumer/Dockerfile
+    container_name: kafka_consumer
+    depends_on:
+      kafka:
+        condition: service_healthy
+    environment:
+      - KAFKA_BROKER=kafka:9092
+      - MONGO_URL=${MONGO_URL}        
+      - DB_NAME=device_data           
+      - RAW_TOPIC=device_streams     
+    networks:
+      - fullstack_net
+    restart: always
+    # ---------------------------------------------------------
+  # Kafka Init — Create topic automatically
+  # ---------------------------------------------------------
+  kafka-init:
+    image: apache/kafka:3.7.0
+    container_name: kafka_init
+    depends_on:
+      kafka:
+        condition: service_healthy
+    entrypoint: ["/bin/bash", "/init/create-topic.sh"]
+    volumes:
+      - ./init:/init
+    networks:
+      - fullstack_net
+    restart: "no"
+
+# ---------------------------------------------------------
+# NETWORK
+# ---------------------------------------------------------
+networks:
+  fullstack_net:
+    driver: bridge
+
+# ---------------------------------------------------------
+# VOLUMES
+# ---------------------------------------------------------
+volumes:
+  kafka_data:
