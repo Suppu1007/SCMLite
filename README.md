@@ -23,50 +23,10 @@ SCMLite is an intelligent logistics management system that enables:
 
 Project Structure
 
-app/
- ├─ core/              # Config, security, dependencies
- ├─ db/                # (future use: DB migrations / indexes)
- ├─ routes/            # All FastAPI route endpoints
- ├─ services/          # Business logic (shipments, tracking, status)
- ├─ templates/         # UI pages (Jinja2)
- ├─ static/            # CSS/JS/Assets
- ├─ utils/             # Email, helper utilities
- ├─ main.py            # App entrypoint for FastAPI
-
-consumer/
- ├─ consumer.py        
- ├─ Dockerfile
-
-producer/
- ├─ producer.py        
- ├─ Dockerfile
-
- server/
- ├─ server.py        # Server data
- ├─ Dockerfile
-
-docker-compose.yml     # Kafka + Apache kafka(krafka) stack
-
-
 
 
 Architecture
 
-
-
- ┌────────────┐     JWT Cookies     ┌─────────────┐
- │   Client   │ ◀──────────────────▶│   FastAPI   │
- └─────▲──────┘                     └─────▲───────┘
-       │ HTML Pages & Live Data           │
-       │                                   │ REST + Kafka Consumer
-       ▼                                   ▼
- ┌──────────────┐                   ┌──────────────┐
- │  MongoDB     │◀─────────────▶│  Kafka Broker │
- │ Users,Shipmnt│                │ IoT Device Msg│
- └──────────────┘                └───────────────┘
-                                             ▲
-                                             │
-                                IoT Sensor Stream (Route_To, Location, etc.)
 
 
 Tech Stack
