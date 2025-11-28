@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SCMLite — Smart Logistics</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    /* Background blur image */
+    .bg-image {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url("/static/images/bg.svg") no-repeat center center;
+        background-size: contain;   
+        background-color: #f0f4f8;  
+        opacity: 0.35;
+        filter: brightness(0.9);
+        z-index: -1;
+    }
+
+    .container {
+      max-width: 900px;
+      width: 90%;
+      margin-top: -60px;
+      animation: fadeUp 1s ease-out both;
+    }
+
+    h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      color: #1b2a41;
+      margin-bottom: 8px;
+    }
+
+    p {
+      font-size: 1.15rem;
+      font-weight: 500;
+      color: #2c3e50;
+      margin-bottom: 45px;
+    }
+
+    .btn-group {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+
+    .card {
+      width: 260px;
+      padding: 28px 20px;
+      background: rgba(255,255,255,0.45);
+      backdrop-filter: blur(12px);
+      border-radius: 18px;
+      border: 1px solid rgba(44,62,80,0.15);
+      cursor: pointer;
+      transition: .35s ease-in-out;
+    }
+
+    .card:hover {
+      transform: translateY(-10px) scale(1.04);
+      box-shadow: 0 15px 28px rgba(0,0,0,0.22);
+    }
+
+    small {
+      color: #1b2a41;
+      font-size: .85rem;
+    }
+
+    footer {
+      position: fixed;
+      bottom: 10px;
+      width: 100%;
+      text-align: center;
+      font-size: 0.85rem;
+      color: #2c3e50;
+      background: transparent;
+      padding: 5px 0;
+      font-weight: 600;
+      pointer-events: none;
+    }
+
+    @keyframes fadeUp {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+      h1 { font-size: 2.1rem; }
+      p { font-size: 1rem; }
+      .card { width: 90%; }
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <div class="bg-image"></div>
+
+  <div class="container">
+    
+    <h1>SCMLite</h1>
+    <p>Smart • Secure • Real-Time Supply Chain Monitoring</p>
+
+    <div class="btn-group">
+
+      <!-- Login -->
+      <a href="/login" style="text-decoration:none;">
+        <div class="card" style="border-left: 7px solid #2c3e50;">
+          <span class="material-icons">login</span>
+          <h3>Login</h3>
+          <small>Access your dashboard</small>
+        </div>
+      </a>
+
+      <!-- Signup -->
+      <a href="/signup" style="text-decoration:none;">
+        <div class="card" style="border-left: 7px solid #2c3e50;">
+          <span class="material-icons" style="color:#009d67;">person_add</span>
+          <h3>Create Account</h3>
+          <small>Join SCMLite & get started</small>
+        </div>
+      </a>
+
+    </div>
+
+  </div>
+
+  <!-- Simple clean footer perfectly centered bottom -->
+  <footer>© 2025 SCMLite • Supi</footer>
+
+</body>
+</html>
