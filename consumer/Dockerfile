@@ -5,7 +5,6 @@ WORKDIR /app
 COPY consumer/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy your current consumer script
 COPY consumer/consumer.py /app/consumer.py
 
 CMD ["python", "consumer.py"]

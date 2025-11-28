@@ -1,49 +1,65 @@
 {% extends "base.html" %}
+{% block title %}User Management — SCMLite{% endblock %}
 {% block content %}
 
-<div class="d-flex justify-content-center mt-4">
-  <div class="card card-custom shadow-lg p-4" style="max-width: 1100px; width: 100%;">
+<h2 class="fw-bold text-center mb-4" style="color:#2c3e50;">
+  User Management
+</h2>
 
-    <h3 class="fw-bold mb-4 text-center">User Management</h3>
+
+<div class="container-fluid d-flex justify-content-center">
+  <div class="p-4 rounded-4 shadow-sm"
+       style="background:rgba(255,255,255,0.60);
+              backdrop-filter:blur(10px);
+              width:95%;
+              max-width:1400px;
+              border:1px solid rgba(44,62,80,0.2);
+              border-left:7px solid #2c3e50;">
 
     {% if flash %}
-    <div class="alert alert-info alert-dismissible fade show" role="alert">
+    <div class="alert alert-info alert-dismissible fade show text-center fw-semibold">
         {{ flash }}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
     {% endif %}
 
-    <div class="table-responsive mt-3">
-      <table class="table table-bordered table-hover align-middle">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle text-center" style="color:#2c3e50;">
 
-        <thead class="table-dark text-center">
+        <!-- White Header -->
+        <thead style="background:#ffffff; font-weight:700; border-bottom:3px solid #2c3e50;">
           <tr>
             <th>Name</th>
             <th>Email</th>
-            <th>Current Role</th>
+            <th>Role</th>
             <th>Status</th>
             <th>Modify Role</th>
             <th>Actions</th>
           </tr>
         </thead>
 
-        <tbody>
+        <!-- Table Body -->
+        <tbody style="background:rgba(255,255,255,0.08);">
+
         {% for user in users %}
-        <tr>
+        <tr class="user-row">
 
           <!-- NAME -->
-          <td class="fw-semibold">{{ user.name }}</td>
+          <td>{{ user.name }}</td>
 
           <!-- EMAIL -->
           <td>{{ user.email }}</td>
 
           <!-- CURRENT ROLE -->
-          <td class="text-center">
-            <span class="badge bg-primary">{{ user.role }}</span>
+          <td>
+            <span class="badge"
+              style="background:#4fc3f7; color: #000; font-size:13px;">
+              {{ user.role }}
+            </span>
           </td>
 
-          <!-- STATUS -->
-          <td class="text-center">
+          <!-- ACCOUNT STATUS -->
+          <td>
             {% if user.status == "Active" %}
               <span class="badge bg-success">Active</span>
             {% elif user.status == "Pending" %}
@@ -54,34 +70,43 @@
           </td>
 
           <!-- MODIFY ROLE -->
-          <td class="text-center">
-            <form method="POST" action="/admin/users" class="d-flex justify-content-center align-items-center gap-2">
+          <td>
+            <form method="POST" action="/admin/users" class="d-flex justify-content-center gap-2">
               <input type="hidden" name="user_email_target" value="{{ user.email }}">
-              <select name="new_role" class="form-select form-select-sm" style="width:auto;">
+
+              <select name="new_role" class="form-select form-select-sm"
+                      style="width:auto; border:1px solid #2c3e50;">
                 <option value="User" {% if user.role == "User" %}selected{% endif %}>User</option>
                 <option value="Manager" {% if user.role == "Manager" %}selected{% endif %}>Manager</option>
                 <option value="Admin" {% if user.role == "Admin" %}selected{% endif %}>Admin</option>
               </select>
-              <button name="action" value="update" class="btn btn-primary btn-sm">
+
+              <button name="action" value="update"
+                      class="btn btn-sm"
+                      style="background:#2c3e50; color:white;">
                 Update
               </button>
             </form>
           </td>
 
-          <!-- ACTION BUTTONS -->
-          <td class="text-center">
+          <!-- ACTIONS -->
+          <td>
             <div class="d-flex justify-content-center gap-2">
 
-              <form method="POST" action="/admin/users" class="d-inline">
+              <form method="POST" action="/admin/users">
                 <input type="hidden" name="user_email_target" value="{{ user.email }}">
                 <input type="hidden" name="new_role" value="{{ user.role }}">
-                <button name="action" value="approve" class="btn btn-success btn-sm">Approve</button>
+                <button name="action" value="approve" class="btn btn-success btn-sm">
+                  Approve
+                </button>
               </form>
 
-              <form method="POST" action="/admin/users" class="d-inline">
+              <form method="POST" action="/admin/users">
                 <input type="hidden" name="user_email_target" value="{{ user.email }}">
                 <input type="hidden" name="new_role" value="{{ user.role }}">
-                <button name="action" value="disable" class="btn btn-danger btn-sm">Disable</button>
+                <button name="action" value="disable" class="btn btn-danger btn-sm">
+                  Disable
+                </button>
               </form>
 
             </div>
@@ -89,6 +114,7 @@
 
         </tr>
         {% endfor %}
+
         </tbody>
 
       </table>
