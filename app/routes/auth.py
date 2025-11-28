@@ -1,6 +1,6 @@
 # app/routes/auth.py
 
-from fastapi import APIRouter, Request, Form, Depends
+from fastapi import APIRouter, Request, Form
 from fastapi.responses import RedirectResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
 from datetime import datetime
@@ -9,29 +9,32 @@ from app.core.config import users_collection
 from app.core.security import hash_password, verify_password
 from app.utils.token_utils import create_access_token
 from app.core.dependencies import get_current_user, is_admin_by_email
-from app.utils.email_utils import send_account_created_email  
+from app.utils.email_utils import send_account_created_email
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
 
+def redirect_user(email: str) -> str:
+    """Helper: Redirect admin vs user correctly"""
+    return "/dashboard" if is_admin_by_email(email) else "/home"
+
+
 # =======================================================
-# LANDING PAGE (PUBLIC HOME)
+# PUBLIC LANDING PAGE (ROOT)
 # =======================================================
 @router.get("/", response_class=HTMLResponse)
 async def landing_page(request: Request):
     token = request.cookies.get("access_token")
 
-    # If user already logged in -> auto redirect
+    # If already logged in, skip landing and go to home/dashboard
     if token:
         try:
             email = await get_current_user(request)
             if email:
-                return RedirectResponse(
-                    "/home" if is_admin_by_email(email) else "/dashboard",
-                    status_code=303
-                )
-        except:
+                return RedirectResponse(redirect_user(email), status_code=303)
+        except Exception:
+            # invalid/expired token — just show landing
             pass
 
     flash = request.cookies.get("flash")
@@ -49,6 +52,17 @@ async def landing_page(request: Request):
 # =======================================================
 @router.get("/login", response_class=HTMLResponse)
 async def login_page(request: Request):
+    token = request.cookies.get("access_token")
+
+    # If already logged in, go to dashboard/home
+    if token:
+        try:
+            email = await get_current_user(request)
+            if email:
+                return RedirectResponse(redirect_user(email), status_code=303)
+        except Exception:
+            pass
+
     flash = request.cookies.get("flash")
     response = templates.TemplateResponse(
         "login.html",
@@ -60,7 +74,7 @@ async def login_page(request: Request):
 
 
 # =======================================================
-# LOGIN ACTION (POST)
+# LOGIN ACTION (POST) - used by both User & Admin tab
 # =======================================================
 @router.post("/login")
 async def login_user(
@@ -68,8 +82,8 @@ async def login_user(
     email: str = Form(...),
     password: str = Form(...)
 ):
-    email_clean = email.strip()
-    user = users_collection.find_one({"email": email_clean})
+    email = email.strip()
+    user = users_collection.find_one({"email": email})
 
     if not user or not verify_password(password, user["password"]):
         return templates.TemplateResponse(
@@ -77,17 +91,15 @@ async def login_user(
             {
                 "request": request,
                 "flash": "Invalid email or password",
-                "entered_email": email_clean
+                "entered_email": email,
             }
         )
 
-    token = create_access_token(email_clean)
+    token = create_access_token(email)
 
-    destination = "/dashboard" if is_admin_by_email(email_clean) else "/home"
-
-    resp = RedirectResponse(destination, status_code=303)
+    resp = RedirectResponse(redirect_user(email), status_code=303)
     resp.set_cookie("access_token", token, httponly=True, samesite="strict")
-    resp.set_cookie("flash", "Login successful!", max_age=3, samesite="strict")
+    resp.set_cookie("flash", "Login successful!", max_age=4)
     return resp
 
 
@@ -120,6 +132,7 @@ async def signup_user(
     fullname = fullname.strip()
     email = email.strip()
 
+    # Password mismatch
     if password != confirm_password:
         return templates.TemplateResponse(
             "signup.html",
@@ -127,21 +140,23 @@ async def signup_user(
                 "request": request,
                 "flash": "Passwords do not match!",
                 "prefill_name": fullname,
-                "prefill_email": email
+                "prefill_email": email,
             }
         )
 
+    # User already exists
     if users_collection.find_one({"email": email}):
         return templates.TemplateResponse(
             "signup.html",
             {
                 "request": request,
-                "flash": "User already exists!",
+                "flash": "Email already registered!",
                 "prefill_name": fullname,
-                "prefill_email": email
+                "prefill_email": email,
             }
         )
 
+    # Create user
     users_collection.insert_one({
         "name": fullname,
         "email": email,
@@ -151,14 +166,14 @@ async def signup_user(
         "created_at": datetime.utcnow()
     })
 
-    # Non-blocking email send
+    # Best-effort welcome email
     try:
         send_account_created_email(email, fullname, password)
-    except:
-        pass
+    except Exception as e:
+        print("Email sending failed:", e)
 
     resp = RedirectResponse("/login", status_code=303)
-    resp.set_cookie("flash", "Signup successful! Please login.", max_age=4, samesite="strict")
+    resp.set_cookie("flash", "Signup successful! Please login.", max_age=4)
     return resp
 
 
@@ -169,5 +184,5 @@ async def signup_user(
 async def logout():
     resp = RedirectResponse("/", status_code=303)
     resp.delete_cookie("access_token")
-    resp.set_cookie("flash", "Logged out successfully!", max_age=3, samesite="strict")
+    resp.set_cookie("flash", "Logged out successfully!", max_age=3)
     return resp
