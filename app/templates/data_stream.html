@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+{% block title %}Data Streams — SCMLite{% endblock %}
+{% block content %}
+
+<div class="d-flex flex-column align-items-center w-100">
+
+  <div class="content-card text-center mb-4" style="max-width:900px; padding:35px 25px;">
+    <h2 class="fw-bold" style="color:var(--scm-primary);">Live IoT Data Streams</h2>
+    <p style="color:var(--scm-secondary); font-size:.95rem;">
+      Search & monitor shipments in real-time
+    </p>
+  </div>
+
+  <!-- SEARCH CARD -->
+  <div class="glass-container p-3 mb-4 w-100" style="max-width:1000px;">
+    <div class="d-flex justify-content-between align-items-center">
+      <input type="text" id="searchInput" class="form-control" placeholder="🔎 Search by Device ID..." style="max-width:350px;">
+      <button class="btn btn-dark ms-2" onclick="filterSearch()">Search</button>
+      <button class="btn btn-outline-secondary ms-2" onclick="resetSearch()">Reset</button>
+    </div>
+
+    <div class="table-responsive mt-3">
+      <table class="table align-middle text-center table-hover" style="color:var(--scm-primary);">
+        <thead class="table-header">
+          <tr>
+            <th>Device</th>
+            <th>Battery</th>
+            <th>Temp</th>
+            <th>Humidity</th>
+            <th>Route</th>
+            <th>Timestamp</th>
+          </tr>
+        </thead>
+        <tbody id="searchResults"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- LIVE STREAMS CARD -->
+  <div class="glass-container p-4 w-100" style="max-width:1200px;">
+    <h5 class="fw-bold mb-3" style="color:var(--scm-primary);">Latest 10 Live Streams</h5>
+
+    <div class="table-responsive">
+      <table class="table align-middle text-center table-hover" style="color:var(--scm-primary);">
+        <thead class="table-header">
+          <tr>
+            <th>Device</th>
+            <th>Battery</th>
+            <th>Temp</th>
+            <th>Humidity</th>
+            <th>Route</th>
+            <th>Timestamp</th>
+          </tr>
+        </thead>
+        <tbody id="dataBody" class="glass-rows"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<style>
+  .glass-container {
+    background: rgba(255,255,255,0.65);
+    border-radius: 20px;
+    border: 1px solid rgba(90,70,54,0.22);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 14px 45px rgba(90,70,54,0.15);
+  }
+  .table-header {
+    background: var(--scm-primary);
+    color: #fff;
+    font-weight: 700;
+  }
+  .glass-rows tr:hover {
+    background: rgba(90,70,54,0.10);
+    cursor: pointer;
+    transform: scale(1.01);
+  }
+</style>
+
+<script>
+  let fullStreamData = [];
+
+  async function loadData() {
+    try {
+      const res = await fetch("/api/streams");
+      const json = await res.json();
+
+      // Your API earlier used { data: [...] }
+      const data = json.data || json || [];
+      fullStreamData = Array.isArray(data) ? data : [];
+
+      // Render latest 10 in the live table
+      renderLatest(fullStreamData.slice(0, 10));
+
+      // If there is a current search term, re-apply filter
+      const q = document.getElementById("searchInput").value.trim();
+      if (q) {
+        filterSearch();
+      }
+
+    } catch (err) {
+      console.error("Stream error:", err);
+      document.getElementById("dataBody").innerHTML =
+        `<tr><td colspan="6" class="text-danger py-3">📡 Stream Unavailable</td></tr>`;
+    }
+  }
+
+  function renderLatest(rows) {
+    const body = document.getElementById("dataBody");
+    if (!rows.length) {
+      body.innerHTML = `<tr><td colspan="6" class="text-muted py-3">⏳ Waiting for incoming stream...</td></tr>`;
+      return;
+    }
+
+    body.innerHTML = rows.map(row => `
+      <tr>
+        <td>${row.Device_ID ?? '-'}</td>
+        <td>${row.Battery_Level ?? '-'}</td>
+        <td>${row.Temperature ?? '-'}</td>
+        <td>${row.Humidity ?? '-'}</td>
+        <td>${row.Route_From ?? '-'} → ${row.Route_To ?? '-'}</td>
+        <td>${row.Timestamp ?? '-'}</td>
+      </tr>
+    `).join("");
+  }
+
+  function filterSearch() {
+    const query = document.getElementById("searchInput").value.trim().toLowerCase();
+    const resEl = document.getElementById("searchResults");
+
+    if (!query) {
+      resEl.innerHTML = `<tr><td colspan="6" class="text-muted py-2">Type a Device ID to search</td></tr>`;
+      return;
+    }
+
+    const results = fullStreamData.filter(r => {
+      const dev = String(r.Device_ID || "").toLowerCase();
+      return dev.includes(query);
+    });
+
+    if (!results.length) {
+      resEl.innerHTML = `<tr><td colspan="6" class="text-muted py-2">No matching devices</td></tr>`;
+      return;
+    }
+
+    resEl.innerHTML = results.slice(0, 10).map(row => `
+      <tr>
+        <td>${row.Device_ID ?? '-'}</td>
+        <td>${row.Battery_Level ?? '-'}</td>
+        <td>${row.Temperature ?? '-'}</td>
+        <td>${row.Humidity ?? '-'}</td>
+        <td>${row.Route_From ?? '-'} → ${row.Route_To ?? '-'}</td>
+        <td>${row.Timestamp ?? '-'}</td>
+      </tr>
+    `).join("");
+  }
+
+  function resetSearch() {
+    document.getElementById("searchInput").value = "";
+    document.getElementById("searchResults").innerHTML = "";
+  }
+
+  // 🔹 Hook up events after DOM is ready
+  document.addEventListener("DOMContentLoaded", () => {
+    const input = document.getElementById("searchInput");
+
+    // Live search while typing
+    input.addEventListener("input", () => {
+      if (!input.value.trim()) {
+        resetSearch();
+      } else {
+        filterSearch();
+      }
+    });
+
+    // Enter key triggers search explicitly
+    input.addEventListener("keyup", (e) => {
+      if (e.key === "Enter") {
+        filterSearch();
+      }
+    });
+  });
+
+  // Refresh live table every 2 seconds
+  setInterval(loadData, 2000);
+  loadData();
+</script>
+
+
+{% endblock %}

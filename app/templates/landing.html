@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SCMLite — Smart Automation</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg-soft: #f6e7d3;
+  --card-bg: #ffffff;
+  --text-dark: #5a4636;
+  --text-light: #8a7b70;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: var(--bg-soft);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* MAIN WRAPPER */
+.landing-card {
+  display: flex;
+  width: 90%;
+  max-width: 1500px;
+  height: 82vh;
+  background: var(--card-bg);
+  border-radius: 42px;
+  overflow: hidden;
+  box-shadow: 0 35px 90px rgba(0, 0, 0, 0.14);
+  position: relative;
+}
+
+/* BRAND TITLE */
+.navbar {
+  position: absolute;
+  top: 28px;
+  left: 45px;
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--text-dark);
+  display: flex;
+  align-items: center;
+}
+.navbar::before {
+  font-size: 28px;
+  margin-right: 8px;
+}
+
+/* LEFT SIDE */
+.left-panel {
+  width: 45%;
+  display: flex;
+  text-align: center;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 70px;
+  animation: fadeUp 1s ease-out forwards;
+  position: relative; /
+}
+
+.left-panel h1 {
+  font-size: 3.4rem;
+  font-weight: 900;
+  letter-spacing: -1px;
+  margin: 0;
+  color: var(--text-dark);
+}
+
+.left-panel p {
+  color: var(--text-light);
+  font-size: 1.15rem;
+  line-height: 1.5;
+  margin-top: 14px;
+  margin-bottom: 28px;
+}
+
+/* CTA BUTTON */
+.btn-get-started {
+  background: var(--bg-soft);
+  color: var(--text-dark);
+  border: 2px solid var(--text-dark);
+  padding: 15px 42px;
+  border-radius: 50px;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 17px;
+  transition: 0.3s;
+}
+
+.btn-get-started:hover {
+  background: var(--text-dark);
+  color: var(--bg-soft);
+  transform: translateY(-4px);
+}
+
+/* FOOTER */
+.footer {
+  position: absolute;
+  bottom: 24px;
+  left: 70px;
+  font-size: 14px;
+  color: var(--text-light);
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+/* RIGHT SIDE */
+.right-panel {
+  width: 55%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+/* Curved BG shape */
+.right-panel::before {
+  content: "";
+  position: absolute;
+  right: -24%;
+  top: 50%;
+  width: 130%;
+  height: 150%;
+  background: var(--bg-soft);
+  border-radius: 50% 0 0 50%;
+  transform: translateY(-50%);
+  z-index: 0;
+}
+
+/* Hero image */
+.hero-img {
+  width: 600px;
+  height: 450px;
+  border-radius: 50%;
+  object-fit: cover;
+  z-index: 2;
+  animation: fadeUp 1.2s ease-out forwards;
+  border: 7px solid rgba(90,70,54,0.18);
+  box-shadow: 0 14px 50px rgba(0,0,0,0.15);
+}
+
+/* Animation */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(35px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Text reveal with staggering */
+.left-panel h1, .left-panel p, .left-panel .btn-get-started {
+  opacity: 0;
+  transform: translateX(-50px);
+  animation: slideIn 0.9s ease-out forwards;
+}
+.left-panel h1 { animation-delay: 0.2s; }
+.left-panel p { animation-delay: 0.45s; }
+.left-panel .btn-get-started { animation-delay: 0.7s; }
+
+@keyframes slideIn {
+  0% { opacity: 0; transform: translateX(-60px); filter: blur(6px);}
+  70% { opacity: 0.85; transform: translateX(4px);}
+  100% { opacity: 1; transform: translateX(0);}
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .landing-card {
+    flex-direction: column-reverse;
+    height: auto;
+    padding-bottom: 60px;
+  }
+  .left-panel, .right-panel {
+    width: 100%;
+    text-align: center;
+    padding: 45px 28px;
+  }
+  .footer {
+    position: static;
+    margin-top: 22px;
+    text-align: center;
+  }
+  .hero-img {
+    width: 260px;
+    height: 260px;
+  }
+  .right-panel::before {
+    width: 110%;
+    height: 100%;
+    right: 0;
+    border-radius: 40% 40% 0 0;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="landing-card">
+
+  <div class="navbar">SCMLite</div>
+
+  <div class="left-panel">
+    <h1>SCM</h1>
+    <p>Secure, Smart and Supply Chain Monitoring.</p>
+    <a href="/login"><button class="btn-get-started">Let’s Get Started</button></a>
+
+    <!-- Updated ✓ Footer Position -->
+    <div class="footer">© 2025 SCMLite • Supi</div>
+  </div>
+
+  <div class="right-panel">
+    <img src="{{ url_for('static', path='images/landing_image.png') }}" class="hero-img" alt="SCMLite Automation">
+  </div>
+
+</div>
+
+</body>
+</html>
