@@ -66,7 +66,7 @@ def connect_kafka():
                 bootstrap_servers=[KAFKA_BROKER],
                 value_serializer=lambda v: json.dumps(v).encode("utf-8")
             )
-            print("✔ Kafka Producer connected")
+            print("Kafka Producer connected")
             return producer
 
         except Exception as e:
