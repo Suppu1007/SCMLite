@@ -8,9 +8,7 @@ from datetime import datetime
 from app.core.config import EMAIL_SENDER, EMAIL_PASSWORD
 
 
-# ============================================================
-# BASIC EMAIL SENDER (Plain Text Format)
-# ============================================================
+#  EMAIL SENDER 
 def _send_email(to_email: str, subject: str, body: str):
     if not EMAIL_SENDER or not EMAIL_PASSWORD:
         print("⚠ Email credentials missing — skipping email.")
@@ -34,9 +32,7 @@ def _send_email(to_email: str, subject: str, body: str):
         print(f"Email failed → {to_email}: {e}")
 
 
-# ============================================================
 # NEW ACCOUNT EMAIL
-# ============================================================
 def send_account_created_email(to_email: str, username: str, password: str):
     subject = "SCMLite - Your Login Credentials"
 
@@ -65,9 +61,7 @@ SCMLite Admin Team
     _send_email(to_email, subject, body)
 
 
-# ============================================================
 # PASSWORD RESET EMAIL
-# ============================================================
 def send_reset_password_email(to_email: str, username: str, reset_link: str):
     subject = "SCMLite - Password Reset Request"
 
@@ -87,9 +81,7 @@ SCMLite Security Team
     _send_email(to_email, subject, body)
 
 
-# ============================================================
 # ROLE UPDATE EMAIL
-# ============================================================
 def send_role_change_email(to_email: str, username: str, old_role: str, new_role: str, changed_by: str):
     timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
     subject = "SCMLite - Role Update Notification"
@@ -110,9 +102,7 @@ SCMLite Admin Team
     _send_email(to_email, subject, body)
 
 
-# ============================================================
 # NEW SHIPMENT NOTIFICATION
-# ============================================================
 def send_shipment_created_email(shipment: dict, created_by: str):
     shipment_id = shipment.get("shipment_id", "Unknown")
     created_at = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
