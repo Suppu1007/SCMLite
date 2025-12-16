@@ -118,7 +118,7 @@ async def authentication_guard(request: Request, call_next):
     return response
 
 
-#  Admin Exists)
+#Admin Exists)
 @app.on_event("startup")
 def initialize():
     ensure_default_admin()
