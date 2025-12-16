@@ -176,31 +176,6 @@ docker logs consumer -f
 docker compose up -d --build app
 ```
 
----
-
-## Learning Outcomes and Academic Relevance
-
-| Concept                          | Covered |
-| -------------------------------- | ------- |
-| Microservices Architecture       | Yes     |
-| REST API Development             | Yes     |
-| JWT-based Authentication         | Yes     |
-| Cookie-based UI Security         | Yes     |
-| Kafka Producer–Consumer Pattern  | Yes     |
-| Asynchronous Processing          | Yes     |
-| Email Automation                 | Yes     |
-| Docker & Container Orchestration | Yes     |
-| Distributed Systems Design       | Yes     |
-
-This project is highly suitable for:
-
-* Cloud Computing coursework
-* Distributed Systems labs
-* DevOps and Microservices learning
-* Final year or capstone academic projects
-
----
-
 ## Future Enhancements
 
 * Real-time UI updates using WebSockets
