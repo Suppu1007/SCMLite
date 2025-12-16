@@ -11,17 +11,13 @@ KAFKA_BROKER = os.getenv("KAFKA_BROKER", "kafka:9092")
 TOPIC_NAME = os.getenv("RAW_TOPIC", "device_streams")
 MONGO_URL = os.getenv("MONGO_URL")
 
-print("\n---------------------")
 print(" Kafka Consumer Init ")
-print("---------------------")
 print(f"KAFKA_BROKER = {KAFKA_BROKER}")
 print(f"TOPIC_NAME = {TOPIC_NAME}")
 print("MongoDB: Using MongoDB Atlas URL")
 
 
-# ---------------------------------------------------------
-# Auto-Create Kafka Topic (Producer/Consumer friendly)
-# ---------------------------------------------------------
+# Auto-Create Kafka Topic 
 def ensure_topic():
     try:
         admin = KafkaAdminClient(bootstrap_servers=KAFKA_BROKER)
@@ -29,7 +25,7 @@ def ensure_topic():
         topic = NewTopic(
             name=TOPIC_NAME,
             num_partitions=3,
-            replication_factor=1  # MSK will override in production
+            replication_factor=1 
         )
 
         admin.create_topics(new_topics=[topic], validate_only=False)
@@ -48,9 +44,7 @@ def ensure_topic():
             pass
 
 
-# ---------------------------------------------------------
 # MongoDB Connect
-# ---------------------------------------------------------
 def connect_mongo():
     if not MONGO_URL:
         print("Missing MONGO_URL environment variable")
@@ -65,9 +59,7 @@ def connect_mongo():
         sys.exit(1)
 
 
-# ---------------------------------------------------------
 # Kafka Consumer Connect
-# ---------------------------------------------------------
 def create_consumer():
     retries = 5
     for attempt in range(retries):
@@ -89,9 +81,6 @@ def create_consumer():
     sys.exit(1)
 
 
-# ---------------------------------------------------------
-# Start
-# ---------------------------------------------------------
 ensure_topic() 
 collection = connect_mongo()
 consumer = create_consumer()
