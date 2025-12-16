@@ -9,23 +9,19 @@ from fastapi.templating import Jinja2Templates
 from app.core.security import decode_token
 from app.core.config import ensure_default_admin
 
-# Initialize app
+# app
 app = FastAPI(
     title="SCMLite API",
     version="2.0.0",
     description="SCMLite backend with Cookie-Based UI Auth & JWT API Auth",
 )
 
-# ======================================
-# Static Files & Jinja Templates
-# ======================================
+# Static Files & Templates
 templates = Jinja2Templates(directory="app/templates")
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 
-# ======================================
 # Custom Swagger JWT Auth Button
-# ======================================
 def custom_openapi():
     if app.openapi_schema:
         return app.openapi_schema
@@ -52,9 +48,8 @@ def custom_openapi():
 app.openapi = custom_openapi
 
 
-# ======================================
+
 # ROUTES
-# ======================================
 from app.routes.auth import ui_router as auth_ui_router, api_router as auth_api_router
 from app.routes.home import ui_router as home_ui_router, api_router as home_api_router
 from app.routes.profile import ui_router as profile_ui_router, api_router as profile_api_router
@@ -84,9 +79,8 @@ app.include_router(admin_api_router)
 app.include_router(users_api_router)
 
 
-# ======================================
+
 # PUBLIC & PROTECTED ROUTE GUARD
-# ======================================
 PUBLIC_PATHS = {
     "/", "/login", "/signup",
     "/forgot-password", "/reset-password"
@@ -104,7 +98,7 @@ async def authentication_guard(request: Request, call_next):
     email = decode_token(token) if token else None
     logged_in = email is not None
 
-    # Allow all APIs – JWT checked separately
+    # Allow all APIs – JWT checked 
     if path.startswith("/api"):
         return await call_next(request)
 
@@ -124,9 +118,7 @@ async def authentication_guard(request: Request, call_next):
     return response
 
 
-# ======================================
-# Startup (Ensures Admin Exists)
-# ======================================
+#  Admin Exists)
 @app.on_event("startup")
 def initialize():
     ensure_default_admin()
