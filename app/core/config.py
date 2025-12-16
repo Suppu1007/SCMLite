@@ -15,16 +15,13 @@ RECAPTCHA_SECRET_KEY = os.getenv("RECAPTCHA_SECRET_KEY", "")
 
 
 
-# ======================================================
+
 # APP SECURITY CONFIG
-# ======================================================
 SECRET_KEY = os.getenv("SECRET_KEY", "supersecretkey123")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "60"))
 
-# ======================================================
-# MONGODB CONFIG
-# ======================================================
+# MONGODB 
 MONGO_URL = os.getenv("MONGO_URL")
 DB_NAME = os.getenv("DB_NAME", "fastapi_auth_db")
 
@@ -43,16 +40,12 @@ role_history_collection = auth_db["role_history"]
 streams_collection = stream_db["streams"]
 iot_readings_collection = stream_db["iot_readings"]
 
-# ======================================================
-# KAFKA / REDPANDA CONFIG
-# ======================================================
+# KAFKA CONFIG
 KAFKA_BROKER = os.getenv("KAFKA_BROKER", "redpanda:9092")
 KAFKA_TOPIC = os.getenv("KAFKA_TOPIC", "device_streams")
 KAFKA_GROUP_ID = os.getenv("KAFKA_GROUP_ID", "shipment-consumer-group")
 
-# ======================================================
 # ADMIN ACCOUNT CONFIG
-# ======================================================
 EMAIL_SENDER = os.getenv("EMAIL_SENDER")
 EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
 
