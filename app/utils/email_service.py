@@ -6,9 +6,7 @@ from datetime import datetime
 from app.core.config import EMAIL_SENDER, EMAIL_PASSWORD
 
 
-# =====================================================
-# BASIC EMAIL SENDER (Plain-Text Only)
-# =====================================================
+# BASIC EMAIL SENDE
 def _send_email(to_email: str, subject: str, body: str):
     if not EMAIL_SENDER or not EMAIL_PASSWORD:
         print("⚠ Email credentials not set. Skipping email...")
@@ -32,9 +30,7 @@ def _send_email(to_email: str, subject: str, body: str):
         print(f" Email send failed → {to_email}: {e}")
 
 
-# =====================================================
 # SHIPMENT CREATION EMAIL
-# =====================================================
 def send_shipment_created_email(shipment: dict, created_by: str):
     shipment_id = shipment.get("shipment_id", "Unknown")
     sender = shipment.get("sender_name", "Sender")
@@ -75,9 +71,8 @@ SCMLite Admin Team
         )
 
 
-# =====================================================
+
 # SHIPMENT STATUS CHANGE EMAIL
-# =====================================================
 def notify_shipment_status_change(shipment: dict, old_status: str, new_status: str, iot_data=None):
     shipment_id = shipment.get("shipment_id", "Unknown")
     ts = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
