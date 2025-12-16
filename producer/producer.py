@@ -12,16 +12,12 @@ load_dotenv()
 KAFKA_BROKER = os.getenv("KAFKA_BROKER", "kafka:9092")
 TOPIC_NAME = os.getenv("RAW_TOPIC", "device_streams")  
 
-print("\n---------------------")
 print(" Kafka Producer Init ")
-print("---------------------")
 print(f"KAFKA_BROKER = {KAFKA_BROKER}")
 print(f"TOPIC_NAME = {TOPIC_NAME}")
 
 
-# ---------------------------------------------------------
 # Auto Topic Creation
-# ---------------------------------------------------------
 def ensure_topic():
     try:
         admin = KafkaAdminClient(bootstrap_servers=KAFKA_BROKER)
@@ -48,9 +44,7 @@ def ensure_topic():
             pass
 
 
-# ---------------------------------------------------------
-# Sensor Data Simulation
-# ---------------------------------------------------------
+# Sensor Data
 def generate_sensor_data():
     return {
         "Device_ID": random.randint(1000, 9999),
@@ -63,9 +57,7 @@ def generate_sensor_data():
     }
 
 
-# ---------------------------------------------------------
-# Kafka Connection Retry Logic
-# ---------------------------------------------------------
+# Kafka Connection
 def connect_kafka():
     retries = 5
     for attempt in range(retries):
@@ -85,9 +77,7 @@ def connect_kafka():
     exit(1)
 
 
-# ---------------------------------------------------------
 # Start Producer
-# ---------------------------------------------------------
 ensure_topic()  
 producer = connect_kafka()
 
