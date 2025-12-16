@@ -47,7 +47,7 @@
             {% endif %}
           </td>
 
-          <!-- 🔄 Role Update -->
+          <!--  Role Update -->
           <td>
             <form method="POST" action="/admin/users/update-role" class="d-flex justify-content-center gap-2">
               <input type="hidden" name="user_email_target" value="{{ user.email }}">
@@ -59,7 +59,7 @@
             </form>
           </td>
 
-          <!-- 🛠 Action Buttons -->
+          <!--  Action Buttons -->
           <td class="d-flex justify-content-center gap-2">
 
             {% if user.status != "Active" %}
@@ -91,7 +91,7 @@
 </div>
 
 
-<!-- 🎨 UI Styling -->
+
 <style>
 .glass-container {
   width: 100%; max-width: 1150px; margin: auto;
